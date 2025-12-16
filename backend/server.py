@@ -890,6 +890,69 @@ async def get_user(user_id: str, admin: dict = Depends(get_admin_user)):
         raise HTTPException(status_code=404, detail="Usuária não encontrada")
     return User(**user)
 
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+
+@api_router.put("/users/{user_id}", response_model=User)
+async def update_user(user_id: str, user_update: UserUpdate, admin: dict = Depends(get_admin_user)):
+    """Update a user (admin only)"""
+    user = await db.users.find_one({'user_id': user_id}, {'_id': 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuária não encontrada")
+    
+    update_data = {k: v for k, v in user_update.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="Nenhum dado para atualizar")
+    
+    # Check if email already exists
+    if 'email' in update_data:
+        existing = await db.users.find_one({'email': update_data['email'], 'user_id': {'$ne': user_id}}, {'_id': 0})
+        if existing:
+            raise HTTPException(status_code=400, detail="Email já está em uso")
+    
+    await db.users.update_one({'user_id': user_id}, {'$set': update_data})
+    updated_user = await db.users.find_one({'user_id': user_id}, {'_id': 0, 'password': 0})
+    return User(**updated_user)
+
+@api_router.delete("/users/{user_id}")
+async def delete_user(user_id: str, admin: dict = Depends(get_admin_user)):
+    """Delete a user and all related data (admin only)"""
+    user = await db.users.find_one({'user_id': user_id}, {'_id': 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuária não encontrada")
+    
+    if user['role'] == 'admin':
+        raise HTTPException(status_code=400, detail="Não é possível excluir uma administradora")
+    
+    # Delete related data
+    mentoradas_mentorias = await db.mentorada_mentorias.find({'user_id': user_id}, {'_id': 0}).to_list(1000)
+    for mm in mentoradas_mentorias:
+        mm_id = mm['mentorada_mentoria_id']
+        # Delete financeiro and parcelas
+        financeiro = await db.financeiro.find_one({'mentorada_mentoria_id': mm_id}, {'_id': 0})
+        if financeiro:
+            await db.parcelas.delete_many({'financeiro_id': financeiro['financeiro_id']})
+            await db.financeiro.delete_one({'mentorada_mentoria_id': mm_id})
+        # Delete sessions and tasks
+        await db.sessoes.delete_many({'mentorada_mentoria_id': mm_id})
+        await db.tarefas.delete_many({'mentorada_mentoria_id': mm_id})
+        await db.agendamentos.delete_many({'mentorada_mentoria_id': mm_id})
+    
+    # Delete mentorada_mentorias
+    await db.mentorada_mentorias.delete_many({'user_id': user_id})
+    
+    # Delete messages
+    await db.mensagens.delete_many({'$or': [{'mentorada_user_id': user_id}, {'sender_user_id': user_id}]})
+    
+    # Delete user products
+    await db.user_produtos.delete_many({'user_id': user_id})
+    
+    # Delete user
+    await db.users.delete_one({'user_id': user_id})
+    
+    return {"message": f"Usuária {user['name']} excluída com sucesso"}
+
 @api_router.get("/mentora", response_model=User)
 async def get_mentora(current_user: dict = Depends(get_current_user)):
     """Get the first admin user (mentora) - available to all authenticated users"""
