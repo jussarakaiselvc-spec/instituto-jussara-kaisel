@@ -643,6 +643,14 @@ async def get_user(user_id: str, admin: dict = Depends(get_admin_user)):
         raise HTTPException(status_code=404, detail="Usuária não encontrada")
     return User(**user)
 
+@api_router.get("/mentora", response_model=User)
+async def get_mentora(current_user: dict = Depends(get_current_user)):
+    """Get the first admin user (mentora) - available to all authenticated users"""
+    mentora = await db.users.find_one({'role': 'admin'}, {'_id': 0, 'password': 0})
+    if not mentora:
+        raise HTTPException(status_code=404, detail="Mentora não encontrada")
+    return User(**mentora)
+
 # ============ DASHBOARD ROUTES ============
 
 @api_router.get("/dashboard")
