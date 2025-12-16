@@ -323,6 +323,36 @@ async def login(login_data: LoginRequest):
 async def get_me(current_user: dict = Depends(get_current_user)):
     return User(**current_user)
 
+@api_router.put("/auth/update-email")
+async def update_email(request: UpdateEmailRequest, current_user: dict = Depends(get_current_user)):
+    # Check if email already exists
+    existing = await db.users.find_one({'email': request.new_email}, {'_id': 0})
+    if existing and existing['user_id'] != current_user['user_id']:
+        raise HTTPException(status_code=400, detail="Email já está em uso")
+    
+    await db.users.update_one(
+        {'user_id': current_user['user_id']},
+        {'$set': {'email': request.new_email}}
+    )
+    
+    return {"message": "Email atualizado com sucesso"}
+
+@api_router.put("/auth/update-password")
+async def update_password(request: UpdatePasswordRequest, current_user: dict = Depends(get_current_user)):
+    # Verify current password
+    user = await db.users.find_one({'user_id': current_user['user_id']}, {'_id': 0})
+    if not verify_password(request.current_password, user['password']):
+        raise HTTPException(status_code=401, detail="Senha atual incorreta")
+    
+    # Update password
+    new_hashed = hash_password(request.new_password)
+    await db.users.update_one(
+        {'user_id': current_user['user_id']},
+        {'$set': {'password': new_hashed}}
+    )
+    
+    return {"message": "Senha atualizada com sucesso"}
+
 # ============ MENTORIAS ROUTES ============
 
 @api_router.post("/mentorias", response_model=Mentoria)
