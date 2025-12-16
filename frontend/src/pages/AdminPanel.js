@@ -235,13 +235,15 @@ const AdminPanel = ({ user }) => {
         Painel de Administração
       </h1>
 
-      <Tabs defaultValue="mentoradas" className="space-y-6">
-        <TabsList className="bg-[#111827]/80 border border-white/10">
+      <Tabs defaultValue={new URLSearchParams(window.location.search).get('tab') || 'mentoradas'} className="space-y-6">
+        <TabsList className="bg-[#111827]/80 border border-white/10 flex-wrap">
           <TabsTrigger value="mentoradas" data-testid="tab-mentoradas">Mentoradas</TabsTrigger>
           <TabsTrigger value="mentorias" data-testid="tab-mentorias">Mentorias</TabsTrigger>
           <TabsTrigger value="sessoes" data-testid="tab-sessoes">Sessões</TabsTrigger>
           <TabsTrigger value="tarefas" data-testid="tab-tarefas">Tarefas</TabsTrigger>
+          <TabsTrigger value="financeiro" data-testid="tab-financeiro">Financeiro</TabsTrigger>
           <TabsTrigger value="produtos" data-testid="tab-produtos">Produtos</TabsTrigger>
+          <TabsTrigger value="agendamentos" data-testid="tab-agendamentos">Agendamentos</TabsTrigger>
         </TabsList>
 
         {/* Mentoradas Tab */}
