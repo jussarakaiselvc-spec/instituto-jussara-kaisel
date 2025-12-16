@@ -12,14 +12,14 @@ const Layout = ({ children, user, onLogout }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  const fetchUnreadCount = async () => {
+  const fetchUnreadCount = useCallback(async () => {
     try {
       const response = await axios.get(`${API}/mensagens/unread-count`);
       setUnreadCount(response.data.unread_count);
     } catch (error) {
       console.error('Error fetching unread count:', error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchUnreadCount();
