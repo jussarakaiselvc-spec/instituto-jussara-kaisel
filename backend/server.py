@@ -743,6 +743,40 @@ async def list_all_mentorada_mentorias(admin: dict = Depends(get_admin_user)):
     mentorias = await db.mentorada_mentorias.find({}, {'_id': 0}).to_list(1000)
     return [MentoradaMentoria(**m) for m in mentorias]
 
+# ============ GOOGLE CALENDAR ROUTES ============
+
+@api_router.get("/google-calendar/auth-url")
+async def get_google_calendar_auth_url(current_user: dict = Depends(get_current_user)):
+    """Get Google Calendar OAuth URL"""
+    # For now, return a placeholder. In production, you'd integrate with Google OAuth
+    return {
+        "auth_url": "https://accounts.google.com/o/oauth2/v2/auth?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=https://www.googleapis.com/auth/calendar",
+        "message": "Para conectar o Google Calendar, você precisará configurar as credenciais OAuth 2.0 no Google Cloud Console"
+    }
+
+@api_router.post("/google-calendar/disconnect")
+async def disconnect_google_calendar(current_user: dict = Depends(get_current_user)):
+    """Disconnect Google Calendar"""
+    # Remove calendar tokens from user
+    await db.users.update_one(
+        {'user_id': current_user['user_id']},
+        {'$unset': {'google_calendar_token': '', 'google_refresh_token': ''}}
+    )
+    return {"message": "Google Calendar desconectado com sucesso"}
+
+@api_router.post("/google-calendar/sync-event")
+async def sync_event_to_google_calendar(agendamento_id: str, admin: dict = Depends(get_admin_user)):
+    """Sync an agendamento to Google Calendar (placeholder for future implementation)"""
+    agendamento = await db.agendamentos.find_one({'agendamento_id': agendamento_id}, {'_id': 0})
+    if not agendamento:
+        raise HTTPException(status_code=404, detail="Agendamento não encontrado")
+    
+    # In production, this would create the event in Google Calendar
+    return {
+        "message": "Para habilitar sincronização automática, configure Google Calendar OAuth",
+        "agendamento": agendamento
+    }
+
 # ============ USERS ADMIN ROUTES ============
 
 @api_router.get("/users", response_model=List[User])
