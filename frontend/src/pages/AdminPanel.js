@@ -539,6 +539,27 @@ const AdminPanel = ({ user }) => {
                         className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
                       />
                     </div>
+                    <div>
+                      <Label className="text-slate-300">Imagem de Capa (URL)</Label>
+                      <Input
+                        value={newMentoria.cover_image_url}
+                        onChange={(e) => setNewMentoria({ ...newMentoria, cover_image_url: e.target.value })}
+                        data-testid="mentoria-cover-input"
+                        placeholder="https://exemplo.com/imagem.jpg"
+                        className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                      />
+                      <p className="text-xs text-slate-500 mt-1">Cole o link de uma imagem (Google Drive, Unsplash, etc.)</p>
+                    </div>
+                    {newMentoria.cover_image_url && (
+                      <div className="rounded-lg overflow-hidden border border-slate-700">
+                        <img 
+                          src={newMentoria.cover_image_url} 
+                          alt="Preview" 
+                          className="w-full h-32 object-cover"
+                          onError={(e) => e.target.style.display = 'none'}
+                        />
+                      </div>
+                    )}
                     <Button
                       onClick={createMentoria}
                       disabled={creatingMentoria}
