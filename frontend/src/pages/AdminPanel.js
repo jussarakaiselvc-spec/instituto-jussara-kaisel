@@ -567,8 +567,34 @@ const AdminPanel = ({ user }) => {
           </div>
         </TabsContent>
 
-        {/* Produtos Tab */}
-        <TabsContent value="produtos" className="space-y-6">
+        {/* Financeiro Tab */}
+        <TabsContent value="financeiro" className="space-y-6">
+          <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8">
+            <h2 className="text-2xl font-heading font-medium text-slate-200 mb-6">Controle Financeiro - Todas as Mentoradas</h2>
+            <FinanceiroAdmin />
+          </div>
+        </TabsContent>
+
+        {/* Agendamentos Tab */}
+        <TabsContent value="agendamentos" className="space-y-6">
+          <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8">
+            <h2 className="text-2xl font-heading font-medium text-slate-200 mb-6">Integração YouCanBookMe</h2>
+            <div className="space-y-4">
+              <p className="text-slate-300 leading-relaxed">
+                Integre seu YouCanBookMe para sincronizar agendamentos automaticamente.
+              </p>
+              <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-6">
+                <h3 className="text-lg font-heading font-medium text-blue-300 mb-4">Como Integrar:</h3>
+                <ol className="list-decimal list-inside space-y-2 text-slate-300">
+                  <li>Acesse seu painel YouCanBookMe</li>
+                  <li>Vá em Settings → Integrations → Webhooks</li>
+                  <li>Adicione esta URL de webhook: <code className="bg-[#0B1120] px-2 py-1 rounded text-[#DAA520]\">{window.location.origin}/api/youcanbookme/webhook</code></li>
+                  <li>Configure para enviar notificações de novos agendamentos</li>
+                </ol>
+              </div>
+              <div className="mt-6\">
+                <h3 className="text-lg font-heading font-medium text-slate-200 mb-4\">Ou Embedar Calendário:</h3>
+                <div className=\"bg-[#0B1120]/50 border border-slate-700 rounded-xl p-6\">\n                  <iframe\n                    src=\"https://jussarakaisel.youcanbook.me\"\n                    style={{ width: '100%', height: '800px', border: 'none' }}\n                    title=\"YouCanBookMe\"\n                  />\n                </div>\n              </div>\n            </div>\n          </div>\n        </TabsContent>\n\n        {/* Produtos Tab */}\n        <TabsContent value=\"produtos\" className=\"space-y-6\">
           <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-heading font-medium text-slate-200">Produtos</h2>
