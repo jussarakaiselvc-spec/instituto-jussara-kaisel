@@ -144,7 +144,7 @@ function App() {
             element={
               user ? (
                 <Layout user={user} onLogout={handleLogout}>
-                  <Mensagens user={user} />
+                  {user.role === 'admin' ? <MensagensAdmin user={user} /> : <Mensagens user={user} />}
                 </Layout>
               ) : (
                 <Navigate to="/login" />
