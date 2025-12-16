@@ -378,6 +378,49 @@ async def get_mentoria(mentoria_id: str, current_user: dict = Depends(get_curren
         raise HTTPException(status_code=404, detail="Mentoria não encontrada")
     return Mentoria(**mentoria)
 
+@api_router.put("/mentorias/{mentoria_id}", response_model=Mentoria)
+async def update_mentoria(mentoria_id: str, mentoria_update: MentoriaCreate, admin: dict = Depends(get_admin_user)):
+    """Update a mentoria (admin only)"""
+    mentoria = await db.mentorias.find_one({'mentoria_id': mentoria_id}, {'_id': 0})
+    if not mentoria:
+        raise HTTPException(status_code=404, detail="Mentoria não encontrada")
+    
+    await db.mentorias.update_one(
+        {'mentoria_id': mentoria_id},
+        {'$set': mentoria_update.model_dump()}
+    )
+    updated = await db.mentorias.find_one({'mentoria_id': mentoria_id}, {'_id': 0})
+    return Mentoria(**updated)
+
+@api_router.delete("/mentorias/{mentoria_id}")
+async def delete_mentoria(mentoria_id: str, admin: dict = Depends(get_admin_user)):
+    """Delete a mentoria and all related data (admin only)"""
+    mentoria = await db.mentorias.find_one({'mentoria_id': mentoria_id}, {'_id': 0})
+    if not mentoria:
+        raise HTTPException(status_code=404, detail="Mentoria não encontrada")
+    
+    # Delete related mentorada_mentorias and cascade
+    mentorada_mentorias = await db.mentorada_mentorias.find({'mentoria_id': mentoria_id}, {'_id': 0}).to_list(1000)
+    for mm in mentorada_mentorias:
+        mm_id = mm['mentorada_mentoria_id']
+        # Delete financeiro and parcelas
+        financeiro = await db.financeiro.find_one({'mentorada_mentoria_id': mm_id}, {'_id': 0})
+        if financeiro:
+            await db.parcelas.delete_many({'financeiro_id': financeiro['financeiro_id']})
+            await db.financeiro.delete_one({'mentorada_mentoria_id': mm_id})
+        # Delete sessions and tasks
+        await db.sessoes.delete_many({'mentorada_mentoria_id': mm_id})
+        await db.tarefas.delete_many({'mentorada_mentoria_id': mm_id})
+        await db.agendamentos.delete_many({'mentorada_mentoria_id': mm_id})
+    
+    # Delete mentorada_mentorias
+    await db.mentorada_mentorias.delete_many({'mentoria_id': mentoria_id})
+    
+    # Delete the mentoria
+    await db.mentorias.delete_one({'mentoria_id': mentoria_id})
+    
+    return {"message": f"Mentoria '{mentoria['name']}' excluída com sucesso"}
+
 # ============ MENTORADA MENTORIA ROUTES ============
 
 @api_router.post("/mentorada-mentorias", response_model=MentoradaMentoria)
