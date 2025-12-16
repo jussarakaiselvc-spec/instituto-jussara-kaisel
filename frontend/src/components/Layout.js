@@ -26,7 +26,7 @@ const Layout = ({ children, user, onLogout }) => {
     // Poll every 10 seconds
     const interval = setInterval(fetchUnreadCount, 10000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchUnreadCount]);
 
   const navItems = [
     { path: '/dashboard', icon: Home, label: 'Dashboard' },
