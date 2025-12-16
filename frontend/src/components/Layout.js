@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Home, BookOpen, Video, CheckSquare, MessageCircle, CreditCard, Package, Settings, LogOut, Menu, X, Calendar } from 'lucide-react';
+import { Home, BookOpen, Video, CheckSquare, MessageCircle, CreditCard, Package, Settings, LogOut, Menu, X, Calendar, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
