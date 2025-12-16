@@ -12,13 +12,6 @@ const Layout = ({ children, user, onLogout }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  useEffect(() => {
-    fetchUnreadCount();
-    // Poll every 10 seconds
-    const interval = setInterval(fetchUnreadCount, 10000);
-    return () => clearInterval(interval);
-  }, []);
-
   const fetchUnreadCount = async () => {
     try {
       const response = await axios.get(`${API}/mensagens/unread-count`);
@@ -27,6 +20,13 @@ const Layout = ({ children, user, onLogout }) => {
       console.error('Error fetching unread count:', error);
     }
   };
+
+  useEffect(() => {
+    fetchUnreadCount();
+    // Poll every 10 seconds
+    const interval = setInterval(fetchUnreadCount, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   const navItems = [
     { path: '/dashboard', icon: Home, label: 'Dashboard' },
