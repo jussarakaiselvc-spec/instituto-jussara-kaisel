@@ -615,6 +615,42 @@ async def get_financeiro_by_mentoria(mentorada_mentoria_id: str, current_user: d
     
     return Financeiro(**financeiro)
 
+class FinanceiroUpdate(BaseModel):
+    valor_total: Optional[float] = None
+    forma_pagamento: Optional[str] = None
+    numero_parcelas: Optional[int] = None
+    observacoes: Optional[str] = None
+
+@api_router.put("/financeiro/{financeiro_id}", response_model=Financeiro)
+async def update_financeiro(financeiro_id: str, financeiro_update: FinanceiroUpdate, admin: dict = Depends(get_admin_user)):
+    """Update financial record (admin only)"""
+    financeiro = await db.financeiro.find_one({'financeiro_id': financeiro_id}, {'_id': 0})
+    if not financeiro:
+        raise HTTPException(status_code=404, detail="Registro financeiro não encontrado")
+    
+    update_data = {k: v for k, v in financeiro_update.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="Nenhum dado para atualizar")
+    
+    await db.financeiro.update_one({'financeiro_id': financeiro_id}, {'$set': update_data})
+    updated = await db.financeiro.find_one({'financeiro_id': financeiro_id}, {'_id': 0})
+    return Financeiro(**updated)
+
+@api_router.delete("/financeiro/{financeiro_id}")
+async def delete_financeiro(financeiro_id: str, admin: dict = Depends(get_admin_user)):
+    """Delete financial record and its parcelas (admin only)"""
+    financeiro = await db.financeiro.find_one({'financeiro_id': financeiro_id}, {'_id': 0})
+    if not financeiro:
+        raise HTTPException(status_code=404, detail="Registro financeiro não encontrado")
+    
+    # Delete parcelas
+    await db.parcelas.delete_many({'financeiro_id': financeiro_id})
+    
+    # Delete financeiro
+    await db.financeiro.delete_one({'financeiro_id': financeiro_id})
+    
+    return {"message": "Registro financeiro excluído com sucesso"}
+
 # ============ PARCELAS ROUTES ============
 
 @api_router.post("/parcelas", response_model=Parcela)
