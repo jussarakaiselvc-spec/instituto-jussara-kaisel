@@ -121,7 +121,7 @@ const AdminPanel = ({ user }) => {
     try {
       await axios.post(`${API}/mentorias`, newMentoria);
       toast.success('Mentoria criada com sucesso!');
-      setNewMentoria({ name: '', description: '' });
+      setNewMentoria({ name: '', description: '', cover_image_url: '' });
       fetchAllData();
     } catch (error) {
       toast.error('Erro ao criar mentoria');
