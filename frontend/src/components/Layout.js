@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, BookOpen, Video, CheckSquare, MessageCircle, CreditCard, Package, Settings, LogOut, Menu, X } from 'lucide-react';
+import { Home, BookOpen, Video, CheckSquare, MessageCircle, CreditCard, Package, Settings, LogOut, Menu, X, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Layout = ({ children, user, onLogout }) => {
