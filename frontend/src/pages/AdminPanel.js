@@ -551,16 +551,70 @@ const AdminPanel = ({ user }) => {
             <div className="space-y-3">
               {mentorias.map((m, i) => (
                 <div key={m.mentoria_id} data-testid={`mentoria-${i}`} className="p-4 bg-[#0B1120]/50 rounded-xl border border-slate-700">
-                  <div className="flex items-start space-x-3">
-                    <BookOpen className="w-5 h-5 text-[#DAA520] mt-1" />
-                    <div>
-                      <p className="text-slate-200 font-medium">{m.name}</p>
-                      {m.description && <p className="text-sm text-slate-400 mt-1">{m.description}</p>}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-start space-x-3">
+                      <BookOpen className="w-5 h-5 text-[#DAA520] mt-1" />
+                      <div>
+                        <p className="text-slate-200 font-medium">{m.name}</p>
+                        {m.description && <p className="text-sm text-slate-400 mt-1">{m.description}</p>}
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openEditMentoria(m)}
+                        className="text-slate-400 hover:text-[#DAA520] hover:bg-[#DAA520]/10"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => deleteMentoria(m.mentoria_id)}
+                        disabled={deletingMentoriaId === m.mentoria_id}
+                        className="text-slate-400 hover:text-red-400 hover:bg-red-500/10"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
+
+            {/* Edit Mentoria Dialog */}
+            <Dialog open={!!editingMentoria} onOpenChange={(open) => !open && setEditingMentoria(null)}>
+              <DialogContent className="bg-[#111827] border-white/10">
+                <DialogHeader>
+                  <DialogTitle className="text-[#DAA520] font-heading">Editar Mentoria</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-slate-300">Nome</Label>
+                    <Input
+                      value={editMentoriaData.name}
+                      onChange={(e) => setEditMentoriaData({ ...editMentoriaData, name: e.target.value })}
+                      className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-slate-300">Descrição</Label>
+                    <Textarea
+                      value={editMentoriaData.description}
+                      onChange={(e) => setEditMentoriaData({ ...editMentoriaData, description: e.target.value })}
+                      className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                    />
+                  </div>
+                  <Button
+                    onClick={updateMentoria}
+                    className="w-full bg-[#DAA520] text-[#0B1120] hover:bg-[#B8860B]"
+                  >
+                    Salvar Alterações
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </TabsContent>
 
