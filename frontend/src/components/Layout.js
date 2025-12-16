@@ -142,6 +142,11 @@ const Layout = ({ children, user, onLogout }) => {
                   >
                     <Icon className="w-5 h-5" />
                     <span className="font-body">{item.label}</span>
+                    {item.path === '/mensagens' && unreadCount > 0 && (
+                      <span className="ml-auto w-5 h-5 rounded-full bg-[#DAA520] text-[#0B1120] text-xs flex items-center justify-center font-bold">
+                        {unreadCount}
+                      </span>
+                    )}
                   </Link>
                 );
               })}
