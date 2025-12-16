@@ -597,7 +597,7 @@ const AdminPanel = ({ user }) => {
                 <ol className="list-decimal list-inside space-y-2 text-slate-300">
                   <li>Acesse seu painel YouCanBookMe</li>
                   <li>Vá em Settings → Integrations → Webhooks</li>
-                  <li>Adicione esta URL de webhook: <code className="bg-[#0B1120] px-2 py-1 rounded text-[#DAA520]\">{window.location.origin}/api/youcanbookme/webhook</code></li>
+                  <li>Adicione esta URL de webhook: <code className="bg-[#0B1120] px-2 py-1 rounded text-[#DAA520]">{window.location.origin}/api/youcanbookme/webhook</code></li>
                   <li>Configure para enviar notificações de novos agendamentos</li>
                 </ol>
               </div>
