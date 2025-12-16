@@ -12,6 +12,7 @@ const Layout = ({ children, user, onLogout }) => {
     { path: '/minha-mentoria', icon: BookOpen, label: 'Minha Mentoria' },
     { path: '/sessoes', icon: Video, label: 'Sessões' },
     { path: '/tarefas', icon: CheckSquare, label: 'Tarefas' },
+    { path: '/calendario', icon: Calendar, label: 'Calendário' },
     { path: '/mensagens', icon: MessageCircle, label: 'Mensagens' },
     { path: '/financeiro', icon: CreditCard, label: 'Financeiro' },
     { path: '/meus-produtos', icon: Package, label: 'Meus Produtos' },
