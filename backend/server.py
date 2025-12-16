@@ -656,6 +656,56 @@ async def assign_produto_to_user(user_produto: UserProdutoCreate, admin: dict = 
     await db.user_produtos.insert_one(doc)
     return UserProduto(**doc)
 
+# ============ AGENDAMENTOS ROUTES ============
+
+@api_router.post("/agendamentos", response_model=Agendamento)
+async def create_agendamento(agendamento: AgendamentoCreate, admin: dict = Depends(get_admin_user)):
+    agendamento_id = str(uuid.uuid4())
+    doc = {
+        'agendamento_id': agendamento_id,
+        **agendamento.model_dump(),
+        'session_date': agendamento.session_date.isoformat(),
+        'created_at': datetime.now(timezone.utc).isoformat()
+    }
+    await db.agendamentos.insert_one(doc)
+    return Agendamento(**doc)
+
+@api_router.get("/agendamentos", response_model=List[Agendamento])
+async def list_agendamentos(current_user: dict = Depends(get_current_user)):
+    if current_user['role'] == 'admin':
+        agendamentos = await db.agendamentos.find({}, {'_id': 0}).sort('session_date', 1).to_list(1000)
+    else:
+        # Get user's mentorias
+        mentorias = await db.mentorada_mentorias.find({'user_id': current_user['user_id']}, {'_id': 0}).to_list(1000)
+        mentoria_ids = [m['mentorada_mentoria_id'] for m in mentorias]
+        agendamentos = await db.agendamentos.find(
+            {'mentorada_mentoria_id': {'$in': mentoria_ids}},
+            {'_id': 0}
+        ).sort('session_date', 1).to_list(1000)
+    
+    return [Agendamento(**a) for a in agendamentos]
+
+@api_router.put("/agendamentos/{agendamento_id}", response_model=Agendamento)
+async def update_agendamento(agendamento_id: str, agendamento: AgendamentoCreate, admin: dict = Depends(get_admin_user)):
+    update_data = agendamento.model_dump()
+    update_data['session_date'] = agendamento.session_date.isoformat()
+    
+    await db.agendamentos.update_one(
+        {'agendamento_id': agendamento_id},
+        {'$set': update_data}
+    )
+    
+    updated = await db.agendamentos.find_one({'agendamento_id': agendamento_id}, {'_id': 0})
+    if not updated:
+        raise HTTPException(status_code=404, detail="Agendamento não encontrado")
+    
+    return Agendamento(**updated)
+
+@api_router.get("/mentorada-mentorias/all", response_model=List[MentoradaMentoria])
+async def list_all_mentorada_mentorias(admin: dict = Depends(get_admin_user)):
+    mentorias = await db.mentorada_mentorias.find({}, {'_id': 0}).to_list(1000)
+    return [MentoradaMentoria(**m) for m in mentorias]
+
 # ============ USERS ADMIN ROUTES ============
 
 @api_router.get("/users", response_model=List[User])
