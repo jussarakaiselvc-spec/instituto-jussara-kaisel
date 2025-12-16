@@ -114,6 +114,19 @@ const Dashboard = ({ user }) => {
               Ver Detalhes
             </Button>
           </div>
+
+          <div className="relative overflow-hidden rounded-2xl bg-[#111827]/80 backdrop-blur-md border border-white/5 shadow-xl p-6 group hover:border-[#DAA520]/30 transition-all duration-500">
+            <Calendar className="w-8 h-8 text-[#DAA520] mb-3" />
+            <h3 className="text-lg font-heading font-medium text-slate-200 mb-2">Agendamentos</h3>
+            <p className="text-sm text-slate-400 mb-4">Agende sua próxima sessão</p>
+            <Button
+              onClick={() => navigate('/calendario')}
+              data-testid="view-calendar-button"
+              className="w-full bg-transparent border border-[#DAA520]/50 text-[#DAA520] hover:bg-[#DAA520]/10 px-4 py-2 rounded-full transition-all duration-300"
+            >
+              Ver Agenda
+            </Button>
+          </div>
         </div>
 
         {/* Message Button */}
