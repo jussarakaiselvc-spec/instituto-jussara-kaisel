@@ -13,6 +13,7 @@ import MeusProdutos from '@/pages/MeusProdutos';
 import AdminPanel from '@/pages/AdminPanel';
 import Calendario from '@/pages/Calendario';
 import Perfil from '@/pages/Perfil';
+import DashboardAdmin from '@/pages/DashboardAdmin';
 import Layout from '@/components/Layout';
 import axios from 'axios';
 
