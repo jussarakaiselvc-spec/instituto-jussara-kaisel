@@ -801,6 +801,63 @@ async def get_mentora(current_user: dict = Depends(get_current_user)):
 
 # ============ DASHBOARD ROUTES ============
 
+@api_router.get("/admin/dashboard")
+async def get_admin_dashboard(admin: dict = Depends(get_admin_user)):
+    # Total mentoradas
+    total_mentoradas = await db.users.count_documents({'role': 'mentorada'})
+    
+    # Total mentorias
+    total_mentorias = await db.mentorias.count_documents({})
+    
+    # Tarefas pendentes
+    tarefas_pendentes = await db.tarefas.count_documents({'status': 'pendente'})
+    
+    # Parcelas
+    now = datetime.now(timezone.utc)
+    first_day_month = datetime(now.year, now.month, 1, tzinfo=timezone.utc)
+    
+    parcelas_pagas_mes = await db.parcelas.count_documents({
+        'status': 'paga',
+        'data_pagamento': {'$gte': first_day_month.isoformat()}
+    })
+    
+    parcelas_pendentes = await db.parcelas.count_documents({'status': 'pendente'})
+    
+    # Receita
+    parcelas_pagas_mes_list = await db.parcelas.find({
+        'status': 'paga',
+        'data_pagamento': {'$gte': first_day_month.isoformat()}
+    }, {'_id': 0}).to_list(1000)
+    receita_mes = sum(p.get('valor', 0) for p in parcelas_pagas_mes_list)
+    
+    all_parcelas_pagas = await db.parcelas.find({'status': 'paga'}, {'_id': 0}).to_list(10000)
+    receita_total = sum(p.get('valor', 0) for p in all_parcelas_pagas)
+    
+    # Recent activities
+    recent_messages = await db.mensagens.find({}, {'_id': 0}).sort('created_at', -1).limit(5).to_list(5)
+    activities = []
+    for msg in recent_messages:
+        user = await db.users.find_one({'user_id': msg['sender_user_id']}, {'_id': 0})
+        if user:
+            time_str = datetime.fromisoformat(msg['created_at']).strftime('%d/%m/%Y %H:%M')
+            activities.append({
+                'description': f"{user['name']} enviou uma mensagem",
+                'time': time_str
+            })
+    
+    return {
+        'stats': {
+            'total_mentoradas': total_mentoradas,
+            'total_mentorias': total_mentorias,
+            'tarefas_pendentes': tarefas_pendentes,
+            'receita_mes': receita_mes,
+            'parcelas_pagas_mes': parcelas_pagas_mes,
+            'parcelas_pendentes': parcelas_pendentes,
+            'receita_total': receita_total
+        },
+        'recent_activities': activities
+    }
+
 @api_router.get("/dashboard")
 async def get_dashboard(current_user: dict = Depends(get_current_user)):
     # Get active mentoria
