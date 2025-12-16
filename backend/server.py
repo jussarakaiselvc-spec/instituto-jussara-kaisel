@@ -64,6 +64,7 @@ class LoginResponse(BaseModel):
 class MentoriaBase(BaseModel):
     name: str
     description: Optional[str] = None
+    cover_image_url: Optional[str] = None
 
 class MentoriaCreate(MentoriaBase):
     pass
