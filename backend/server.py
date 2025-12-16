@@ -183,6 +183,23 @@ class UserProduto(UserProdutoBase):
     user_produto_id: str
     created_at: datetime
 
+class AgendamentoBase(BaseModel):
+    mentorada_mentoria_id: str
+    session_number: int
+    tema: str
+    session_date: datetime
+    video_url: Optional[str] = None
+    audio_url: Optional[str] = None
+    resumo: Optional[str] = None
+    status: str = "agendada"  # agendada, realizada, cancelada
+
+class AgendamentoCreate(AgendamentoBase):
+    pass
+
+class Agendamento(AgendamentoBase):
+    agendamento_id: str
+    created_at: datetime
+
 class EmailRequest(BaseModel):
     recipient_email: EmailStr
     subject: str
