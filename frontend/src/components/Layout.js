@@ -3,9 +3,29 @@ import { Link, useLocation } from 'react-router-dom';
 import { Home, BookOpen, Video, CheckSquare, MessageCircle, CreditCard, Package, Settings, LogOut, Menu, X, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
 const Layout = ({ children, user, onLogout }) => {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    fetchUnreadCount();
+    // Poll every 10 seconds
+    const interval = setInterval(fetchUnreadCount, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchUnreadCount = async () => {
+    try {
+      const response = await axios.get(`${API}/mensagens/unread-count`);
+      setUnreadCount(response.data.unread_count);
+    } catch (error) {
+      console.error('Error fetching unread count:', error);
+    }
+  };
 
   const navItems = [
     { path: '/dashboard', icon: Home, label: 'Dashboard' },
