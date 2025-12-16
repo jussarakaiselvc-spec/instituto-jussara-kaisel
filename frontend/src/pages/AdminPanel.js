@@ -59,6 +59,9 @@ const AdminPanel = ({ user }) => {
   // Create Mentorada
   const [newUser, setNewUser] = useState({ name: '', email: '', password: '', role: 'mentorada' });
   const [creatingUser, setCreatingUser] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [editUserData, setEditUserData] = useState({ name: '', email: '' });
+  const [deletingUserId, setDeletingUserId] = useState(null);
 
   const createUser = async () => {
     setCreatingUser(true);
@@ -72,6 +75,38 @@ const AdminPanel = ({ user }) => {
     } finally {
       setCreatingUser(false);
     }
+  };
+
+  const updateUser = async () => {
+    try {
+      await axios.put(`${API}/users/${editingUser.user_id}`, editUserData);
+      toast.success('Mentorada atualizada com sucesso!');
+      setEditingUser(null);
+      fetchAllData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erro ao atualizar mentorada');
+    }
+  };
+
+  const deleteUser = async (userId) => {
+    if (!window.confirm('Tem certeza que deseja excluir esta mentorada? Todos os dados relacionados serão excluídos.')) {
+      return;
+    }
+    setDeletingUserId(userId);
+    try {
+      await axios.delete(`${API}/users/${userId}`);
+      toast.success('Mentorada excluída com sucesso!');
+      fetchAllData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erro ao excluir mentorada');
+    } finally {
+      setDeletingUserId(null);
+    }
+  };
+
+  const openEditUser = (user) => {
+    setEditingUser(user);
+    setEditUserData({ name: user.name, email: user.email });
   };
 
   // Create Mentoria
