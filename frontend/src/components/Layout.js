@@ -37,10 +37,11 @@ const Layout = ({ children, user, onLogout }) => {
     { path: '/mensagens', icon: MessageCircle, label: 'Mensagens' },
     { path: '/financeiro', icon: CreditCard, label: 'Financeiro' },
     { path: '/meus-produtos', icon: Package, label: 'Meus Produtos' },
+    { path: '/perfil', icon: UserCircle, label: 'Perfil' },
   ];
 
   if (user?.role === 'admin') {
-    navItems.push({ path: '/admin', icon: Settings, label: 'Administração' });
+    navItems.splice(navItems.length - 1, 0, { path: '/admin', icon: Settings, label: 'Administração' });
   }
 
   return (
