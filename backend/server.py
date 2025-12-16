@@ -777,6 +777,64 @@ async def sync_event_to_google_calendar(agendamento_id: str, admin: dict = Depen
         "agendamento": agendamento
     }
 
+# ============ ADMIN FINANCEIRO OVERVIEW ============
+
+@api_router.get("/admin/financeiro-overview")
+async def get_financeiro_overview(admin: dict = Depends(get_admin_user)):
+    """Get financial overview of all mentoradas"""
+    result = []
+    
+    # Get all financeiro records
+    financeiros = await db.financeiro.find({}, {'_id': 0}).to_list(1000)
+    
+    for fin in financeiros:
+        # Get mentoria details
+        mentoria_info = await db.mentorada_mentorias.find_one(
+            {'mentorada_mentoria_id': fin['mentorada_mentoria_id']}, 
+            {'_id': 0}
+        )
+        
+        if not mentoria_info:
+            continue
+        
+        # Get user details
+        user_info = await db.users.find_one(
+            {'user_id': mentoria_info['user_id']}, 
+            {'_id': 0, 'password': 0}
+        )
+        
+        # Get mentoria name
+        mentoria_details = await db.mentorias.find_one(
+            {'mentoria_id': mentoria_info['mentoria_id']}, 
+            {'_id': 0}
+        )
+        
+        # Get parcelas
+        parcelas = await db.parcelas.find(
+            {'financeiro_id': fin['financeiro_id']}, 
+            {'_id': 0}
+        ).sort('numero_parcela', 1).to_list(1000)
+        
+        parcelas_pagas = [p for p in parcelas if p['status'] == 'paga']
+        parcelas_pendentes = [p for p in parcelas if p['status'] == 'pendente']
+        
+        valor_recebido = sum(p['valor'] for p in parcelas_pagas)
+        
+        result.append({
+            'financeiro_id': fin['financeiro_id'],
+            'mentorada_name': user_info['name'] if user_info else 'N/A',
+            'mentoria_name': mentoria_details['name'] if mentoria_details else 'N/A',
+            'valor_total': fin['valor_total'],
+            'forma_pagamento': fin['forma_pagamento'],
+            'total_parcelas': len(parcelas),
+            'parcelas_pagas_count': len(parcelas_pagas),
+            'parcelas_pendentes_count': len(parcelas_pendentes),
+            'valor_recebido': valor_recebido,
+            'parcelas': parcelas
+        })
+    
+    return result
+
 # ============ USERS ADMIN ROUTES ============
 
 @api_router.get("/users", response_model=List[User])
