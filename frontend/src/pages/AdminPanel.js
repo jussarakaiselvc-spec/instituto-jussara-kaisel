@@ -110,10 +110,10 @@ const AdminPanel = ({ user }) => {
   };
 
   // Create Mentoria
-  const [newMentoria, setNewMentoria] = useState({ name: '', description: '' });
+  const [newMentoria, setNewMentoria] = useState({ name: '', description: '', cover_image_url: '' });
   const [creatingMentoria, setCreatingMentoria] = useState(false);
   const [editingMentoria, setEditingMentoria] = useState(null);
-  const [editMentoriaData, setEditMentoriaData] = useState({ name: '', description: '' });
+  const [editMentoriaData, setEditMentoriaData] = useState({ name: '', description: '', cover_image_url: '' });
   const [deletingMentoriaId, setDeletingMentoriaId] = useState(null);
 
   const createMentoria = async () => {
