@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Users, BookOpen, Video, CheckSquare, Package } from 'lucide-react';
+import { Plus, Users, BookOpen, Video, CheckSquare, Package, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import FinanceiroAdmin from '@/components/FinanceiroAdmin';
 import TarefasAdmin from '@/components/TarefasAdmin';
