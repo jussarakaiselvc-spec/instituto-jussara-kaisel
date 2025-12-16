@@ -1,0 +1,171 @@
+{
+  "identity": {
+    "persona": "E1: The Anti-AI Designer",
+    "mission": "Create a mystical, luxurious, and professional mentorship portal that feels like a sanctuary, not a SaaS.",
+    "principles": [
+      "Fusion over Imitation: Mix spiritual warmth with high-end luxury tech.",
+      "Emotion First: Every screen must evoke 'Serenity' and 'Elevation'.",
+      "Content is King: The mentorship content is the hero; UI is the vessel.",
+      "Zoom In: Focus on intimate details (gold borders, subtle grain).",
+      "Negative Space: Allow the user to breathe; do not clutter the spiritual journey."
+    ]
+  },
+  "typography": {
+    "fonts": {
+      "heading": {
+        "family": "Cormorant Garamond",
+        "fallback": "serif",
+        "weights": ["400", "600", "700"],
+        "usage": "All H1-H3 headings, quotes, and key metrics."
+      },
+      "body": {
+        "family": "Manrope",
+        "fallback": "sans-serif",
+        "weights": ["300", "400", "500", "600"],
+        "usage": "UI text, paragraphs, buttons, inputs."
+      }
+    },
+    "scale": {
+      "h1": "text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight",
+      "h2": "text-3xl md:text-4xl font-medium tracking-tight",
+      "h3": "text-2xl md:text-3xl font-medium",
+      "body_lg": "text-lg leading-relaxed",
+      "body_base": "text-base leading-relaxed",
+      "caption": "text-sm tracking-wide uppercase opacity-70"
+    }
+  },
+  "colors": {
+    "palette": {
+      "background": "#0B1120",
+      "foreground": "#F8FAFC",
+      "card": "#111827",
+      "card_foreground": "#F8FAFC",
+      "popover": "#0F172A",
+      "popover_foreground": "#F8FAFC",
+      "primary": "#DAA520",
+      "primary_foreground": "#0B1120",
+      "secondary": "#1E293B",
+      "secondary_foreground": "#E2E8F0",
+      "muted": "#1E293B",
+      "muted_foreground": "#94A3B8",
+      "accent": "#1E293B",
+      "accent_foreground": "#DAA520",
+      "destructive": "#7F1D1D",
+      "destructive_foreground": "#F8FAFC",
+      "border": "#334155",
+      "input": "#1E293B",
+      "ring": "#DAA520"
+    },
+    "gradients": {
+      "gold_glow": "linear-gradient(135deg, #DAA520 0%, #B8860B 100%)",
+      "midnight_depth": "linear-gradient(to bottom, #0B1120, #020617)",
+      "glass_surface": "linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)"
+    }
+  },
+  "visual_enhancers": {
+    "glassmorphism": {
+      "style": "backdrop-blur-xl bg-white/5 border border-white/10 shadow-2xl",
+      "usage": "Cards, Sidebar, Sticky Headers, Modals"
+    },
+    "borders": {
+      "gold_trace": "border border-yellow-600/30 hover:border-yellow-500/60 transition-colors duration-500",
+      "subtle": "border border-slate-800"
+    },
+    "shadows": {
+      "glow": "0 0 20px -5px rgba(218, 165, 32, 0.15)",
+      "deep": "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+    },
+    "textures": {
+      "grain": "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E\")"
+    }
+  },
+  "layout": {
+    "grid_system": {
+      "dashboard": "grid grid-cols-1 md:grid-cols-12 gap-6 p-6 md:p-8",
+      "bento_card_hero": "col-span-1 md:col-span-8 lg:col-span-8 row-span-2",
+      "bento_card_side": "col-span-1 md:col-span-4 lg:col-span-4 row-span-1"
+    },
+    "spacing": {
+      "container_padding": "p-6 md:p-12 lg:p-16",
+      "section_gap": "gap-8 md:gap-12"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-[#DAA520] text-[#0B1120] hover:bg-[#B8860B] font-medium px-8 py-3 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(218,165,32,0.3)] hover:shadow-[0_0_25px_rgba(218,165,32,0.5)]",
+      "secondary": "bg-transparent border border-[#DAA520]/50 text-[#DAA520] hover:bg-[#DAA520]/10 px-8 py-3 rounded-full transition-all duration-300",
+      "ghost": "text-slate-400 hover:text-[#DAA520] hover:bg-white/5 px-4 py-2 rounded-lg transition-colors"
+    },
+    "cards": {
+      "base": "relative overflow-hidden rounded-2xl bg-[#111827]/80 backdrop-blur-md border border-white/5 shadow-xl p-6 group hover:border-[#DAA520]/30 transition-all duration-500",
+      "interactive": "cursor-pointer hover:-translate-y-1 hover:shadow-2xl transition-all duration-300"
+    },
+    "inputs": {
+      "style": "bg-[#0B1120]/50 border-slate-700 focus:border-[#DAA520] focus:ring-1 focus:ring-[#DAA520] text-slate-200 placeholder:text-slate-600 rounded-xl h-12 px-4 transition-all"
+    }
+  },
+  "motion": {
+    "transitions": {
+      "default": "transition-all duration-300 ease-out",
+      "slow": "transition-all duration-700 ease-out"
+    },
+    "animations": {
+      "fade_in": "animate-in fade-in duration-700",
+      "slide_up": "animate-in slide-in-from-bottom-4 duration-700 fade-in"
+    }
+  },
+  "images": {
+    "backgrounds": [
+      {
+        "url": "https://images.unsplash.com/photo-1618631179029-dfaeb4b786de?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "description": "Abstract dark geometry for subtle background overlays (low opacity)",
+        "category": "background"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1661760386386-4c3f63586f82?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "description": "Golden light/window for hero section atmosphere",
+        "category": "hero_bg"
+      }
+    ],
+    "dashboard": [
+      {
+        "url": "https://images.unsplash.com/photo-1740002529288-1986580c61eb?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "description": "Woman writing/journaling - use for 'Diagnosis' or 'Tasks' card",
+        "category": "feature_card"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1584406029443-6f2aa671b5dd?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "description": "Woman sitting/meditating - use for 'My Mentorship' or 'Sessions' card",
+        "category": "feature_card"
+      }
+    ],
+    "logo": {
+      "url": "https://customer-assets.emergentagent.com/job_portal-jussara/artifacts/ydejbjhx_LOGO%20%20KUNDALINI%20.INSTITUCIONAL%20E%20MINHA.png",
+      "description": "Official Institute Logo"
+    }
+  },
+  "universal_guidelines": [
+    "DO NOT use gradients for text unless it is a very large headline.",
+    "DO NOT use pure black (#000000). Use #0B1120 or #020617.",
+    "ALWAYS add 'data-testid' to interactive elements.",
+    "Use 'sonner' for toasts.",
+    "Use 'lucide-react' for icons.",
+    "Ensure all text has sufficient contrast (APCA/WCAG AA).",
+    "Mobile images must be max-h-[80vh].",
+    "Containers with borders must have internal padding (p-6+)."
+  ],
+  "instructions_to_main_agent": {
+    "setup": [
+      "Install fonts: 'Cormorant Garamond' and 'Manrope' via Google Fonts in index.css.",
+      "Update tailwind.config.js with the colors and fonts defined above.",
+      "Set the global body background to #0B1120 and text to #F8FAFC."
+    ],
+    "implementation": [
+      "Create a 'Layout' component that includes the Sidebar (Glassmorphism) and Main Content Area.",
+      "Use the 'Bento' grid system for the Dashboard overview.",
+      "Implement the 'Card' component with the specified glassmorphism and hover effects.",
+      "Use the provided image URLs for specific sections (e.g., Diagnosis card, Sessions card).",
+      "Ensure the 'Gold' accent is used sparingly for high-value actions (Primary Buttons, Active States, Key Metrics)."
+    ]
+  }
+}
