@@ -523,9 +523,16 @@ const AdminPanel = ({ user }) => {
         </TabsContent>
 
         {/* Tarefas Tab */}
-        <TabsContent value="tarefas">
+        <TabsContent value="tarefas" className="space-y-6">
+          {/* Visualização de Tarefas */}
           <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8">
-            <h2 className="text-2xl font-heading font-medium text-slate-200 mb-6">Criar Tarefa</h2>
+            <h2 className="text-2xl font-heading font-medium text-slate-200 mb-6">Todas as Tarefas</h2>
+            <TarefasAdmin />
+          </div>
+
+          {/* Criar Tarefa */}
+          <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8">
+            <h2 className="text-2xl font-heading font-medium text-slate-200 mb-6">Criar Nova Tarefa</h2>
             <div className="space-y-4">
               <div>
                 <Label className="text-slate-300">Mentorada/Mentoria (ID)</Label>
