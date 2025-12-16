@@ -23,6 +23,7 @@ import { Plus, Users, BookOpen, Video, CheckSquare, Package } from 'lucide-react
 import { toast } from 'sonner';
 import FinanceiroAdmin from '@/components/FinanceiroAdmin';
 import TarefasAdmin from '@/components/TarefasAdmin';
+import AgendamentosIntegrations from '@/components/AgendamentosIntegrations';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
