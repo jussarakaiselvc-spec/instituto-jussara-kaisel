@@ -22,15 +22,10 @@ const Mensagens = ({ user }) => {
 
   const fetchMentora = async () => {
     try {
-      // Get admin users (mentora)
-      const response = await axios.get(`${API}/users`);
-      const adminUser = response.data.find(u => u.role === 'admin');
-      if (adminUser) {
-        setMentora(adminUser);
-        fetchMensagens(adminUser.user_id);
-      } else {
-        setLoading(false);
-      }
+      // Get mentora
+      const response = await axios.get(`${API}/mentora`);
+      setMentora(response.data);
+      fetchMensagens(response.data.user_id);
     } catch (error) {
       console.error('Error fetching mentora:', error);
       toast.error('Erro ao carregar conversa');
