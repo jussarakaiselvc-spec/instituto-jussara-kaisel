@@ -202,6 +202,18 @@ function App() {
               )
             }
           />
+          <Route
+            path="/perfil"
+            element={
+              user ? (
+                <Layout user={user} onLogout={handleLogout}>
+                  <Perfil user={user} />
+                </Layout>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
