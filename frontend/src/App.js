@@ -188,6 +188,18 @@ function App() {
               )
             }
           />
+          <Route
+            path="/calendario"
+            element={
+              user ? (
+                <Layout user={user} onLogout={handleLogout}>
+                  <Calendario user={user} />
+                </Layout>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
