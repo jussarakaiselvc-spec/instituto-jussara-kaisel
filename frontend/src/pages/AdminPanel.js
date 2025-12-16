@@ -601,9 +601,22 @@ const AdminPanel = ({ user }) => {
                   <li>Configure para enviar notificações de novos agendamentos</li>
                 </ol>
               </div>
-              <div className="mt-6\">
-                <h3 className="text-lg font-heading font-medium text-slate-200 mb-4\">Ou Embedar Calendário:</h3>
-                <div className=\"bg-[#0B1120]/50 border border-slate-700 rounded-xl p-6\">\n                  <iframe\n                    src=\"https://jussarakaisel.youcanbook.me\"\n                    style={{ width: '100%', height: '800px', border: 'none' }}\n                    title=\"YouCanBookMe\"\n                  />\n                </div>\n              </div>\n            </div>\n          </div>\n        </TabsContent>\n\n        {/* Produtos Tab */}\n        <TabsContent value=\"produtos\" className=\"space-y-6\">
+              <div className="mt-6">
+                <h3 className="text-lg font-heading font-medium text-slate-200 mb-4">Ou Embedar Calendário:</h3>
+                <div className="bg-[#0B1120]/50 border border-slate-700 rounded-xl p-6">
+                  <iframe
+                    src="https://jussarakaisel.youcanbook.me"
+                    style={{ width: '100%', height: '800px', border: 'none' }}
+                    title="YouCanBookMe"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* Produtos Tab */}
+        <TabsContent value="produtos" className="space-y-6">
           <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-heading font-medium text-slate-200">Produtos</h2>
