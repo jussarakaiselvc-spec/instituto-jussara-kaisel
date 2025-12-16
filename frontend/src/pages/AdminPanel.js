@@ -159,7 +159,11 @@ const AdminPanel = ({ user }) => {
 
   const openEditMentoria = (mentoria) => {
     setEditingMentoria(mentoria);
-    setEditMentoriaData({ name: mentoria.name, description: mentoria.description || '' });
+    setEditMentoriaData({ 
+      name: mentoria.name, 
+      description: mentoria.description || '',
+      cover_image_url: mentoria.cover_image_url || ''
+    });
   };
 
   // Assign Mentoria to User
