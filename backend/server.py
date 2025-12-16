@@ -835,6 +835,47 @@ async def get_financeiro_overview(admin: dict = Depends(get_admin_user)):
     
     return result
 
+@api_router.get("/admin/tarefas-overview")
+async def get_tarefas_overview(admin: dict = Depends(get_admin_user)):
+    """Get all tarefas with mentorada and mentoria info"""
+    result = []
+    
+    # Get all tarefas
+    tarefas = await db.tarefas.find({}, {'_id': 0}).to_list(10000)
+    
+    for tarefa in tarefas:
+        # Get mentoria info
+        mentoria_info = await db.mentorada_mentorias.find_one(
+            {'mentorada_mentoria_id': tarefa['mentorada_mentoria_id']}, 
+            {'_id': 0}
+        )
+        
+        if not mentoria_info:
+            continue
+        
+        # Get user
+        user_info = await db.users.find_one(
+            {'user_id': mentoria_info['user_id']}, 
+            {'_id': 0, 'password': 0}
+        )
+        
+        # Get mentoria name
+        mentoria_details = await db.mentorias.find_one(
+            {'mentoria_id': mentoria_info['mentoria_id']}, 
+            {'_id': 0}
+        )
+        
+        result.append({
+            **tarefa,
+            'mentorada_name': user_info['name'] if user_info else 'N/A',
+            'mentoria_name': mentoria_details['name'] if mentoria_details else 'N/A'
+        })
+    
+    # Sort by created_at desc
+    result.sort(key=lambda x: x.get('created_at', ''), reverse=True)
+    
+    return result
+
 # ============ USERS ADMIN ROUTES ============
 
 @api_router.get("/users", response_model=List[User])
