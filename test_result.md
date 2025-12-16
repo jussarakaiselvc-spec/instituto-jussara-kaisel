@@ -54,43 +54,10 @@
 ##   stuck_tasks:
 ##     - "Task name with persistent issues"
 ##   test_all: false
-##   test_priority: "high_first"  # or "sequential" or "stuck_first"
 ##
 ## agent_communication:
-##     -agent: "main"  # or "testing" or "user"
-##     -message: "Communication message between agents"
-
-# Protocol Guidelines for Main agent
-#
-# 1. Update Test Result File Before Testing:
-#    - Main agent must always update the `test_result.md` file before calling the testing agent
-#    - Add implementation details to the status_history
-#    - Set `needs_retesting` to true for tasks that need testing
-#    - Update the `test_plan` section to guide testing priorities
-#    - Add a message to `agent_communication` explaining what you've done
-#
-# 2. Incorporate User Feedback:
-#    - When a user provides feedback that something is or isn't working, add this information to the relevant task's status_history
-#    - Update the working status based on user feedback
-#    - If a user reports an issue with a task that was marked as working, increment the stuck_count
-#    - Whenever user reports issue in the app, if we have testing agent and task_result.md file so find the appropriate task for that and append in status_history of that task to contain the user concern and problem as well 
-#
-# 3. Track Stuck Tasks:
-#    - Monitor which tasks have high stuck_count values or where you are fixing same issue again and again, analyze that when you read task_result.md
-#    - For persistent issues, use websearch tool to find solutions
-#    - Pay special attention to tasks in the stuck_tasks list
-#    - When you fix an issue with a stuck task, don't reset the stuck_count until the testing agent confirms it's working
-#
-# 4. Provide Context to Testing Agent:
-#    - When calling the testing agent, provide clear instructions about:
-#      - Which tasks need testing (reference the test_plan)
-#      - Any authentication details or configuration needed
-#      - Specific test scenarios to focus on
-#      - Any known issues or edge cases to verify
-#
-# 5. Call the testing agent with specific instructions referring to test_result.md
-#
-# IMPORTANT: Main agent must ALWAYS update test_result.md BEFORE calling the testing agent, as it relies on this file to understand what to test next.
+##     -agent: "main"
+##     -message: "Message to testing agent"
 
 #====================================================================================================
 # END - Testing Protocol - DO NOT EDIT OR REMOVE THIS SECTION
@@ -101,3 +68,160 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Portal web para Instituto Jussara Kaisel com funcionalidades de mentoria. Funcionalidades solicitadas pelo usuário: 1) Editar e excluir mentoradas na aba Mentoradas, 2) Editar registros financeiros na aba Financeiro, 3) Adicionar formas de pagamento: Cartão de Crédito, Depósito Bancário, PayPal, PIX, Parcelamento Especial (direto)."
+
+backend:
+  - task: "PUT /api/users/{user_id} - Editar mentorada"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Endpoint implementado para editar nome e email de mentoradas"
+
+  - task: "DELETE /api/users/{user_id} - Excluir mentorada"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Endpoint implementado para excluir mentoradas e todos os dados relacionados"
+
+  - task: "PUT /api/financeiro/{financeiro_id} - Editar registro financeiro"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Endpoint implementado para editar valor_total, forma_pagamento, numero_parcelas, observacoes"
+
+  - task: "DELETE /api/financeiro/{financeiro_id} - Excluir registro financeiro"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Endpoint implementado para excluir financeiro e parcelas relacionadas"
+
+frontend:
+  - task: "AdminPanel - Botões editar/excluir mentoradas"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/AdminPanel.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Botões de editar (lápis) e excluir (lixeira) adicionados na lista de mentoradas"
+
+  - task: "AdminPanel - Dialog de edição de mentorada"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/AdminPanel.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Dialog para editar nome e email da mentorada implementado"
+
+  - task: "FinanceiroAdmin - Criar registro financeiro"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/FinanceiroAdmin.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Formulário de criação com todas as formas de pagamento implementado"
+
+  - task: "FinanceiroAdmin - Formas de pagamento"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/FinanceiroAdmin.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Dropdown com: Cartão de Crédito, Depósito Bancário, PIX, PayPal, Parcelamento Especial (direto)"
+
+  - task: "FinanceiroAdmin - Editar registro financeiro"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/FinanceiroAdmin.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Botão de editar e dialog de edição implementados"
+
+  - task: "FinanceiroAdmin - Excluir registro financeiro"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/FinanceiroAdmin.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Botão de excluir com confirmação implementado"
+
+  - task: "AgendamentosIntegrations - Calendly/YouCanBookMe/Google Calendar"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/AgendamentosIntegrations.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Configuração de URLs e iframes para Calendly, YouCanBookMe e Google Calendar"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "PUT /api/users/{user_id} - Editar mentorada"
+    - "DELETE /api/users/{user_id} - Excluir mentorada"
+    - "PUT /api/financeiro/{financeiro_id} - Editar registro financeiro"
+    - "AdminPanel - Botões editar/excluir mentoradas"
+    - "FinanceiroAdmin - Formas de pagamento"
+    - "FinanceiroAdmin - Editar registro financeiro"
+  stuck_tasks: []
+  test_all: true
+
+agent_communication:
+  - agent: "main"
+    message: "Implementei as funcionalidades solicitadas pelo usuário: 1) Editar e excluir mentoradas no painel admin, 2) Editar registros financeiros, 3) Adicionar formas de pagamento (Cartão de Crédito, Depósito Bancário, PayPal, PIX, Parcelamento Especial). Por favor, teste todas as funcionalidades. Credenciais: admin@instituto.com / admin_password"
