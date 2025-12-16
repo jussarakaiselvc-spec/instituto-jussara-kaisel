@@ -522,6 +522,16 @@ async def get_unread_count(current_user: dict = Depends(get_current_user)):
     })
     return {'unread_count': count}
 
+@api_router.get("/mensagens/unread-count-from/{sender_user_id}")
+async def get_unread_count_from_sender(sender_user_id: str, current_user: dict = Depends(get_current_user)):
+    """Get unread messages count from a specific sender (for admin)"""
+    count = await db.mensagens.count_documents({
+        'sender_user_id': sender_user_id,
+        'mentorada_user_id': sender_user_id,
+        'read': False
+    })
+    return {'unread_count': count}
+
 # ============ FINANCEIRO ROUTES ============
 
 @api_router.post("/financeiro", response_model=Financeiro)
