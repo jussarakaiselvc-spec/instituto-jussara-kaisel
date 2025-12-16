@@ -112,6 +112,9 @@ const AdminPanel = ({ user }) => {
   // Create Mentoria
   const [newMentoria, setNewMentoria] = useState({ name: '', description: '' });
   const [creatingMentoria, setCreatingMentoria] = useState(false);
+  const [editingMentoria, setEditingMentoria] = useState(null);
+  const [editMentoriaData, setEditMentoriaData] = useState({ name: '', description: '' });
+  const [deletingMentoriaId, setDeletingMentoriaId] = useState(null);
 
   const createMentoria = async () => {
     setCreatingMentoria(true);
@@ -125,6 +128,38 @@ const AdminPanel = ({ user }) => {
     } finally {
       setCreatingMentoria(false);
     }
+  };
+
+  const updateMentoria = async () => {
+    try {
+      await axios.put(`${API}/mentorias/${editingMentoria.mentoria_id}`, editMentoriaData);
+      toast.success('Mentoria atualizada com sucesso!');
+      setEditingMentoria(null);
+      fetchAllData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erro ao atualizar mentoria');
+    }
+  };
+
+  const deleteMentoria = async (mentoriaId) => {
+    if (!window.confirm('Tem certeza que deseja excluir esta mentoria? Todos os dados relacionados serão excluídos.')) {
+      return;
+    }
+    setDeletingMentoriaId(mentoriaId);
+    try {
+      await axios.delete(`${API}/mentorias/${mentoriaId}`);
+      toast.success('Mentoria excluída com sucesso!');
+      fetchAllData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erro ao excluir mentoria');
+    } finally {
+      setDeletingMentoriaId(null);
+    }
+  };
+
+  const openEditMentoria = (mentoria) => {
+    setEditingMentoria(mentoria);
+    setEditMentoriaData({ name: mentoria.name, description: mentoria.description || '' });
   };
 
   // Assign Mentoria to User
