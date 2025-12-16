@@ -205,6 +205,13 @@ class EmailRequest(BaseModel):
     subject: str
     html_content: str
 
+class UpdateEmailRequest(BaseModel):
+    new_email: EmailStr
+
+class UpdatePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
 # ============ AUTH HELPERS ============
 
 def hash_password(password: str) -> str:
