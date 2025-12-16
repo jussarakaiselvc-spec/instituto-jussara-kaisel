@@ -573,35 +573,51 @@ const AdminPanel = ({ user }) => {
               </Dialog>
             </div>
 
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {mentorias.map((m, i) => (
-                <div key={m.mentoria_id} data-testid={`mentoria-${i}`} className="p-4 bg-[#0B1120]/50 rounded-xl border border-slate-700">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-start space-x-3">
-                      <BookOpen className="w-5 h-5 text-[#DAA520] mt-1" />
-                      <div>
-                        <p className="text-slate-200 font-medium">{m.name}</p>
-                        {m.description && <p className="text-sm text-slate-400 mt-1">{m.description}</p>}
-                      </div>
+                <div key={m.mentoria_id} data-testid={`mentoria-${i}`} className="bg-[#0B1120]/50 rounded-xl border border-slate-700 overflow-hidden hover:border-[#DAA520]/30 transition-all">
+                  {m.cover_image_url ? (
+                    <div className="h-40 overflow-hidden">
+                      <img 
+                        src={m.cover_image_url} 
+                        alt={m.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.parentElement.style.display = 'none';
+                        }}
+                      />
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => openEditMentoria(m)}
-                        className="text-slate-400 hover:text-[#DAA520] hover:bg-[#DAA520]/10"
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => deleteMentoria(m.mentoria_id)}
-                        disabled={deletingMentoriaId === m.mentoria_id}
-                        className="text-slate-400 hover:text-red-400 hover:bg-red-500/10"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                  ) : (
+                    <div className="h-24 bg-gradient-to-r from-[#DAA520]/20 to-[#B8860B]/20 flex items-center justify-center">
+                      <BookOpen className="w-12 h-12 text-[#DAA520]/50" />
+                    </div>
+                  )}
+                  <div className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <p className="text-slate-200 font-medium text-lg">{m.name}</p>
+                        {m.description && <p className="text-sm text-slate-400 mt-1 line-clamp-2">{m.description}</p>}
+                      </div>
+                      <div className="flex items-center space-x-1 ml-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => openEditMentoria(m)}
+                          className="text-slate-400 hover:text-[#DAA520] hover:bg-[#DAA520]/10"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deleteMentoria(m.mentoria_id)}
+                          disabled={deletingMentoriaId === m.mentoria_id}
+                          className="text-slate-400 hover:text-red-400 hover:bg-red-500/10"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
