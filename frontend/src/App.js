@@ -100,7 +100,7 @@ function App() {
             element={
               user ? (
                 <Layout user={user} onLogout={handleLogout}>
-                  <Dashboard user={user} />
+                  {user.role === 'admin' ? <DashboardAdmin user={user} /> : <Dashboard user={user} />}
                 </Layout>
               ) : (
                 <Navigate to="/login" />
