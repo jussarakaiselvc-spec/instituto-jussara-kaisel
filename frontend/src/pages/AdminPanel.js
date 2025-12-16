@@ -346,16 +346,71 @@ const AdminPanel = ({ user }) => {
             <div className="space-y-3">
               {users.filter(u => u.role === 'mentorada').map((u, i) => (
                 <div key={u.user_id} data-testid={`user-${i}`} className="p-4 bg-[#0B1120]/50 rounded-xl border border-slate-700">
-                  <div className="flex items-center space-x-3">
-                    <Users className="w-5 h-5 text-[#DAA520]" />
-                    <div>
-                      <p className="text-slate-200 font-medium">{u.name}</p>
-                      <p className="text-sm text-slate-400">{u.email}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <Users className="w-5 h-5 text-[#DAA520]" />
+                      <div>
+                        <p className="text-slate-200 font-medium">{u.name}</p>
+                        <p className="text-sm text-slate-400">{u.email}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openEditUser(u)}
+                        className="text-slate-400 hover:text-[#DAA520] hover:bg-[#DAA520]/10"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => deleteUser(u.user_id)}
+                        disabled={deletingUserId === u.user_id}
+                        className="text-slate-400 hover:text-red-400 hover:bg-red-500/10"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
+
+            {/* Edit User Dialog */}
+            <Dialog open={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)}>
+              <DialogContent className="bg-[#111827] border-white/10">
+                <DialogHeader>
+                  <DialogTitle className="text-[#DAA520] font-heading">Editar Mentorada</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-slate-300">Nome</Label>
+                    <Input
+                      value={editUserData.name}
+                      onChange={(e) => setEditUserData({ ...editUserData, name: e.target.value })}
+                      className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-slate-300">Email</Label>
+                    <Input
+                      type="email"
+                      value={editUserData.email}
+                      onChange={(e) => setEditUserData({ ...editUserData, email: e.target.value })}
+                      className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                    />
+                  </div>
+                  <Button
+                    onClick={updateUser}
+                    className="w-full bg-[#DAA520] text-[#0B1120] hover:bg-[#B8860B]"
+                  >
+                    Salvar Alterações
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
 
           {/* Assign Mentoria */}
