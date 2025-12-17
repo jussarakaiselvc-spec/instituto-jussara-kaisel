@@ -918,6 +918,12 @@ async def get_parcelas_by_financeiro(financeiro_id: str, current_user: dict = De
     parcelas = await db.parcelas.find({'financeiro_id': financeiro_id}, {'_id': 0}).sort('numero_parcela', 1).to_list(1000)
     return [Parcela(**p) for p in parcelas]
 
+class ParcelaUpdate(BaseModel):
+    valor: Optional[float] = None
+    data_vencimento: Optional[datetime] = None
+    status: Optional[str] = None  # pendente, paga
+    data_pagamento: Optional[datetime] = None
+
 @api_router.put("/parcelas/{parcela_id}", response_model=Parcela)
 async def update_parcela(parcela_id: str, parcela: ParcelaCreate, admin: dict = Depends(get_admin_user)):
     update_data = parcela.model_dump()
@@ -934,6 +940,82 @@ async def update_parcela(parcela_id: str, parcela: ParcelaCreate, admin: dict = 
         raise HTTPException(status_code=404, detail="Parcela não encontrada")
     
     return Parcela(**updated)
+
+@api_router.patch("/parcelas/{parcela_id}", response_model=Parcela)
+async def patch_parcela(parcela_id: str, parcela_update: ParcelaUpdate, admin: dict = Depends(get_admin_user)):
+    """Update specific fields of a parcela (admin only)"""
+    existing = await db.parcelas.find_one({'parcela_id': parcela_id}, {'_id': 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Parcela não encontrada")
+    
+    update_data = {k: v for k, v in parcela_update.model_dump().items() if v is not None}
+    
+    # Convert datetime to isoformat
+    if 'data_vencimento' in update_data:
+        update_data['data_vencimento'] = update_data['data_vencimento'].isoformat()
+    if 'data_pagamento' in update_data:
+        update_data['data_pagamento'] = update_data['data_pagamento'].isoformat()
+    
+    if not update_data:
+        raise HTTPException(status_code=400, detail="Nenhum dado para atualizar")
+    
+    await db.parcelas.update_one({'parcela_id': parcela_id}, {'$set': update_data})
+    updated = await db.parcelas.find_one({'parcela_id': parcela_id}, {'_id': 0})
+    return Parcela(**updated)
+
+@api_router.delete("/parcelas/{parcela_id}")
+async def delete_parcela(parcela_id: str, admin: dict = Depends(get_admin_user)):
+    """Delete a single parcela (admin only)"""
+    existing = await db.parcelas.find_one({'parcela_id': parcela_id}, {'_id': 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Parcela não encontrada")
+    
+    await db.parcelas.delete_one({'parcela_id': parcela_id})
+    
+    # Reorder remaining parcelas
+    financeiro_id = existing['financeiro_id']
+    parcelas = await db.parcelas.find({'financeiro_id': financeiro_id}, {'_id': 0}).sort('numero_parcela', 1).to_list(1000)
+    for i, p in enumerate(parcelas, 1):
+        await db.parcelas.update_one({'parcela_id': p['parcela_id']}, {'$set': {'numero_parcela': i}})
+    
+    # Update financeiro numero_parcelas
+    await db.financeiro.update_one({'financeiro_id': financeiro_id}, {'$set': {'numero_parcelas': len(parcelas)}})
+    
+    return {"message": "Parcela excluída com sucesso"}
+
+class ParcelaCreateSimple(BaseModel):
+    financeiro_id: str
+    valor: float
+    data_vencimento: datetime
+
+@api_router.post("/parcelas/add", response_model=Parcela)
+async def add_parcela(parcela: ParcelaCreateSimple, admin: dict = Depends(get_admin_user)):
+    """Add a new parcela to an existing financeiro (admin only)"""
+    financeiro = await db.financeiro.find_one({'financeiro_id': parcela.financeiro_id}, {'_id': 0})
+    if not financeiro:
+        raise HTTPException(status_code=404, detail="Registro financeiro não encontrado")
+    
+    # Get current parcelas count to determine numero_parcela
+    parcelas = await db.parcelas.find({'financeiro_id': parcela.financeiro_id}, {'_id': 0}).to_list(1000)
+    numero_parcela = len(parcelas) + 1
+    
+    parcela_id = str(uuid.uuid4())
+    doc = {
+        'parcela_id': parcela_id,
+        'financeiro_id': parcela.financeiro_id,
+        'numero_parcela': numero_parcela,
+        'valor': parcela.valor,
+        'data_vencimento': parcela.data_vencimento.isoformat(),
+        'status': 'pendente',
+        'data_pagamento': None,
+        'created_at': datetime.now(timezone.utc).isoformat()
+    }
+    await db.parcelas.insert_one(doc)
+    
+    # Update financeiro numero_parcelas
+    await db.financeiro.update_one({'financeiro_id': parcela.financeiro_id}, {'$set': {'numero_parcelas': numero_parcela}})
+    
+    return Parcela(**doc)
 
 # ============ PRODUTOS ROUTES ============
 
