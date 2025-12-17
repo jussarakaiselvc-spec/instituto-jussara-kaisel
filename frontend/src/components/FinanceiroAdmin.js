@@ -484,7 +484,7 @@ const FinanceiroAdmin = () => {
         <div className="text-center py-12">
           <DollarSign className="w-16 h-16 text-slate-600 mx-auto mb-4" />
           <p className="text-slate-400">Nenhuma informação financeira cadastrada ainda</p>
-          <p className="text-slate-500 text-sm mt-2">Clique em "Novo Registro" para adicionar</p>
+          <p className="text-slate-500 text-sm mt-2">Clique em &quot;Novo Registro&quot; para adicionar</p>
         </div>
       ) : (
         <>
