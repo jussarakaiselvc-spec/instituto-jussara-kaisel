@@ -223,17 +223,17 @@ const MinhaMentoria = ({ user }) => {
                   >
                     {/* Cover Image */}
                     {mentoria.cover_image_url ? (
-                      <div className="h-32 overflow-hidden">
+                      <div className="h-40 overflow-hidden">
                         <img
                           src={mentoria.cover_image_url.startsWith('/uploads') 
                             ? `${BACKEND_URL}/api${mentoria.cover_image_url}` 
                             : mentoria.cover_image_url}
                           alt={mentoria.name}
-                          className={`w-full h-full object-cover ${!isUnlocked ? 'filter blur-sm' : ''}`}
+                          className="w-full h-full object-cover"
                         />
                       </div>
                     ) : (
-                      <div className="h-32 bg-gradient-to-br from-[#DAA520]/20 to-[#0B1120] flex items-center justify-center">
+                      <div className="h-40 bg-gradient-to-br from-[#DAA520]/20 to-[#0B1120] flex items-center justify-center">
                         <Activity className="w-12 h-12 text-[#DAA520]/40" />
                       </div>
                     )}
