@@ -15,6 +15,7 @@ class InstitutoJussaraKaiselAPITester:
         self.created_financeiro_id = None
         self.created_mentoria_id = None
         self.created_mentorada_mentoria_id = None
+        self.created_parcela_ids = []
 
     def run_test(self, name, method, endpoint, expected_status, data=None, token=None):
         """Run a single API test"""
