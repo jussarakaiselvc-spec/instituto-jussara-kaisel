@@ -283,7 +283,7 @@ const AdminPanel = ({ user }) => {
     try {
       await axios.post(`${API}/produtos`, newProduto);
       toast.success('Produto criado com sucesso!');
-      setNewProduto({ name: '', description: '', content_url: '' });
+      setNewProduto({ name: '', description: '', content_url: '', cover_image_url: '', price: '' });
       fetchAllData();
     } catch (error) {
       toast.error('Erro ao criar produto');
