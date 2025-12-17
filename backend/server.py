@@ -423,6 +423,31 @@ async def update_password(request: UpdatePasswordRequest, current_user: dict = D
     
     return {"message": "Senha atualizada com sucesso"}
 
+@api_router.put("/me/profile", response_model=User)
+async def update_profile(request: UpdateProfileRequest, current_user: dict = Depends(get_current_user)):
+    """Update current user's profile"""
+    update_data = {k: v for k, v in request.model_dump().items() if v is not None}
+    
+    if not update_data:
+        raise HTTPException(status_code=400, detail="Nenhum dado para atualizar")
+    
+    # Check if email already exists
+    if 'email' in update_data:
+        existing = await db.users.find_one({
+            'email': update_data['email'], 
+            'user_id': {'$ne': current_user['user_id']}
+        }, {'_id': 0})
+        if existing:
+            raise HTTPException(status_code=400, detail="Email já está em uso")
+    
+    await db.users.update_one(
+        {'user_id': current_user['user_id']},
+        {'$set': update_data}
+    )
+    
+    updated_user = await db.users.find_one({'user_id': current_user['user_id']}, {'_id': 0, 'password': 0})
+    return User(**updated_user)
+
 # ============ MENTORIAS ROUTES ============
 
 @api_router.post("/mentorias", response_model=Mentoria)
