@@ -933,6 +933,35 @@ const AdminPanel = ({ user }) => {
                         value={newProduto.content_url}
                         onChange={(e) => setNewProduto({ ...newProduto, content_url: e.target.value })}
                         data-testid="produto-url-input"
+                        placeholder="https://exemplo.com/conteudo"
+                        className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-slate-300">Imagem de Capa (URL)</Label>
+                      <Input
+                        value={newProduto.cover_image_url}
+                        onChange={(e) => setNewProduto({ ...newProduto, cover_image_url: e.target.value })}
+                        placeholder="https://exemplo.com/imagem.jpg"
+                        className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                      />
+                    </div>
+                    {newProduto.cover_image_url && (
+                      <div className="rounded-lg overflow-hidden border border-slate-700">
+                        <img 
+                          src={newProduto.cover_image_url} 
+                          alt="Preview" 
+                          className="w-full h-32 object-cover"
+                          onError={(e) => e.target.style.display = 'none'}
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <Label className="text-slate-300">Preço (R$)</Label>
+                      <Input
+                        value={newProduto.price}
+                        onChange={(e) => setNewProduto({ ...newProduto, price: e.target.value })}
+                        placeholder="Ex: 197,00"
                         className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
                       />
                     </div>
@@ -949,15 +978,43 @@ const AdminPanel = ({ user }) => {
               </Dialog>
             </div>
 
-            <div className="space-y-3">
+            {/* Vitrine de Produtos */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {produtos.map((p, i) => (
-                <div key={p.produto_id} data-testid={`produto-${i}`} className="p-4 bg-[#0B1120]/50 rounded-xl border border-slate-700">
-                  <div className="flex items-start space-x-3">
-                    <Package className="w-5 h-5 text-[#DAA520] mt-1" />
-                    <div>
-                      <p className="text-slate-200 font-medium">{p.name}</p>
-                      {p.description && <p className="text-sm text-slate-400 mt-1">{p.description}</p>}
+                <div key={p.produto_id} data-testid={`produto-${i}`} className="bg-[#0B1120]/50 rounded-xl border border-slate-700 overflow-hidden hover:border-[#DAA520]/30 transition-all group">
+                  {p.cover_image_url ? (
+                    <div className="h-48 overflow-hidden">
+                      <img 
+                        src={p.cover_image_url} 
+                        alt={p.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.parentElement.innerHTML = '<div class="h-48 bg-gradient-to-r from-[#DAA520]/20 to-[#B8860B]/20 flex items-center justify-center"><svg class="w-16 h-16 text-[#DAA520]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg></div>';
+                        }}
+                      />
                     </div>
+                  ) : (
+                    <div className="h-32 bg-gradient-to-r from-[#DAA520]/20 to-[#B8860B]/20 flex items-center justify-center">
+                      <Package className="w-16 h-16 text-[#DAA520]/50" />
+                    </div>
+                  )}
+                  <div className="p-4">
+                    <p className="text-slate-200 font-medium text-lg">{p.name}</p>
+                    {p.description && <p className="text-sm text-slate-400 mt-1 line-clamp-2">{p.description}</p>}
+                    {p.price && (
+                      <p className="text-[#DAA520] font-heading font-semibold text-xl mt-3">R$ {p.price}</p>
+                    )}
+                    {p.content_url && (
+                      <a 
+                        href={p.content_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="mt-3 inline-block w-full text-center bg-[#DAA520]/10 text-[#DAA520] px-4 py-2 rounded-lg hover:bg-[#DAA520]/20 transition-colors"
+                      >
+                        Acessar Conteúdo
+                      </a>
+                    )}
                   </div>
                 </div>
               ))}
