@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, BookOpen, CheckSquare, CreditCard, Calendar } from 'lucide-react';
+import { MessageCircle, BookOpen, CheckSquare, CreditCard, Calendar, Video, FileText, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -10,6 +10,7 @@ const API = `${BACKEND_URL}/api`;
 
 const Dashboard = ({ user }) => {
   const [dashboardData, setDashboardData] = useState(null);
+  const [sessoes, setSessoes] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -19,8 +20,12 @@ const Dashboard = ({ user }) => {
 
   const fetchDashboard = async () => {
     try {
-      const response = await axios.get(`${API}/dashboard`);
-      setDashboardData(response.data);
+      const [dashRes, sessoesRes] = await Promise.all([
+        axios.get(`${API}/dashboard`),
+        axios.get(`${API}/minha-mentoria/sessoes`).catch(() => ({ data: [] })),
+      ]);
+      setDashboardData(dashRes.data);
+      setSessoes(sessoesRes.data || []);
     } catch (error) {
       console.error('Error fetching dashboard:', error);
       toast.error('Erro ao carregar dashboard');
