@@ -867,6 +867,87 @@ const AdminPanel = ({ user }) => {
               </DialogContent>
             </Dialog>
 
+            {/* Edit Sessao Dialog */}
+            <Dialog open={!!editingSessao} onOpenChange={(open) => !open && setEditingSessao(null)}>
+              <DialogContent className="bg-[#111827] border-white/10 max-w-lg">
+                <DialogHeader>
+                  <DialogTitle className="text-[#DAA520] font-heading">Editar Sessão</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-slate-300">Número da Sessão</Label>
+                      <Input
+                        type="number"
+                        value={editSessaoData.session_number}
+                        onChange={(e) => setEditSessaoData({ ...editSessaoData, session_number: e.target.value })}
+                        className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-slate-300">Data</Label>
+                      <Input
+                        type="date"
+                        value={editSessaoData.session_date}
+                        onChange={(e) => setEditSessaoData({ ...editSessaoData, session_date: e.target.value })}
+                        className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label className="text-slate-300">Tema</Label>
+                    <Input
+                      value={editSessaoData.tema}
+                      onChange={(e) => setEditSessaoData({ ...editSessaoData, tema: e.target.value })}
+                      className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-slate-300">Link do Vídeo (YouTube)</Label>
+                    <Input
+                      value={editSessaoData.video_url}
+                      onChange={(e) => setEditSessaoData({ ...editSessaoData, video_url: e.target.value })}
+                      placeholder="https://youtube.com/..."
+                      className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-slate-300">Link do Áudio (Spotify)</Label>
+                    <Input
+                      value={editSessaoData.audio_url}
+                      onChange={(e) => setEditSessaoData({ ...editSessaoData, audio_url: e.target.value })}
+                      placeholder="https://open.spotify.com/..."
+                      className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-slate-300">Link do Drive (Materiais)</Label>
+                    <Input
+                      value={editSessaoData.drive_url}
+                      onChange={(e) => setEditSessaoData({ ...editSessaoData, drive_url: e.target.value })}
+                      placeholder="https://drive.google.com/..."
+                      className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-slate-300">Resumo</Label>
+                    <Textarea
+                      value={editSessaoData.resumo}
+                      onChange={(e) => setEditSessaoData({ ...editSessaoData, resumo: e.target.value })}
+                      className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                      rows={3}
+                    />
+                  </div>
+                  <Button
+                    onClick={updateSessao}
+                    className="w-full bg-[#DAA520] text-[#0B1120] hover:bg-[#B8860B]"
+                  >
+                    Salvar Alterações
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+
             {/* Edit Mentoria Dialog */}
             <Dialog open={!!editingMentoria} onOpenChange={(open) => !open && setEditingMentoria(null)}>
               <DialogContent className="bg-[#111827] border-white/10">
