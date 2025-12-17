@@ -423,6 +423,79 @@ async def update_password(request: UpdatePasswordRequest, current_user: dict = D
     
     return {"message": "Senha atualizada com sucesso"}
 
+# ============ MENTORADA HISTORY (COMPLETE PROFILE) ============
+
+@api_router.get("/mentorada/{user_id}/historico")
+async def get_mentorada_historico(user_id: str, admin: dict = Depends(get_admin_user)):
+    """Get complete history/profile of a mentorada (admin only)"""
+    # Get user data
+    user = await db.users.find_one({'user_id': user_id}, {'_id': 0, 'password': 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="Mentorada não encontrada")
+    
+    # Get all mentorada_mentorias for this user
+    mentorada_mentorias = await db.mentorada_mentorias.find({'user_id': user_id}, {'_id': 0}).to_list(100)
+    
+    # For each mentoria, get sessions, tasks, and financial data
+    mentorias_data = []
+    for mm in mentorada_mentorias:
+        mm_id = mm['mentorada_mentoria_id']
+        
+        # Get mentoria name
+        mentoria = await db.mentorias.find_one({'mentoria_id': mm['mentoria_id']}, {'_id': 0})
+        
+        # Get sessions
+        sessoes = await db.sessoes.find({'mentorada_mentoria_id': mm_id}, {'_id': 0}).sort('session_number', 1).to_list(100)
+        
+        # Get tasks
+        tarefas = await db.tarefas.find({'mentorada_mentoria_id': mm_id}, {'_id': 0}).to_list(100)
+        
+        # Get financial
+        financeiro = await db.financeiro.find_one({'mentorada_mentoria_id': mm_id}, {'_id': 0})
+        parcelas = []
+        if financeiro:
+            parcelas = await db.parcelas.find({'financeiro_id': financeiro['financeiro_id']}, {'_id': 0}).sort('numero_parcela', 1).to_list(100)
+        
+        mentorias_data.append({
+            'mentorada_mentoria': mm,
+            'mentoria': mentoria,
+            'sessoes': sessoes,
+            'tarefas': tarefas,
+            'financeiro': financeiro,
+            'parcelas': parcelas,
+        })
+    
+    return {
+        'user': user,
+        'mentorias': mentorias_data
+    }
+
+@api_router.put("/mentorada/{user_id}/dados")
+async def update_mentorada_dados(user_id: str, request: UpdateProfileRequest, admin: dict = Depends(get_admin_user)):
+    """Update mentorada data (admin only)"""
+    user = await db.users.find_one({'user_id': user_id}, {'_id': 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="Mentorada não encontrada")
+    
+    update_data = {k: v for k, v in request.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="Nenhum dado para atualizar")
+    
+    await db.users.update_one({'user_id': user_id}, {'$set': update_data})
+    updated = await db.users.find_one({'user_id': user_id}, {'_id': 0, 'password': 0})
+    return User(**updated)
+
+@api_router.get("/minha-mentoria/sessoes", response_model=List[Sessao])
+async def get_minhas_sessoes(current_user: dict = Depends(get_current_user)):
+    """Get sessions for current user's active mentoria"""
+    # Find user's mentorada_mentoria
+    mm = await db.mentorada_mentorias.find_one({'user_id': current_user['user_id'], 'status': 'ativa'}, {'_id': 0})
+    if not mm:
+        return []
+    
+    sessoes = await db.sessoes.find({'mentorada_mentoria_id': mm['mentorada_mentoria_id']}, {'_id': 0}).sort('session_number', 1).to_list(100)
+    return [Sessao(**s) for s in sessoes]
+
 @api_router.put("/me/profile", response_model=User)
 async def update_profile(request: UpdateProfileRequest, current_user: dict = Depends(get_current_user)):
     """Update current user's profile"""
