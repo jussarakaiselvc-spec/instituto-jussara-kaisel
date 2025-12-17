@@ -462,6 +462,12 @@ async def get_my_mentorias(current_user: dict = Depends(get_current_user)):
     mentorias = await db.mentorada_mentorias.find({'user_id': current_user['user_id']}, {'_id': 0}).to_list(1000)
     return [MentoradaMentoria(**m) for m in mentorias]
 
+@api_router.get("/mentorada-mentorias/all", response_model=List[MentoradaMentoria])
+async def list_all_mentorada_mentorias(admin: dict = Depends(get_admin_user)):
+    """Lista todos os vínculos mentorada-mentoria (admin only)"""
+    mentorias = await db.mentorada_mentorias.find({}, {'_id': 0}).to_list(1000)
+    return [MentoradaMentoria(**m) for m in mentorias]
+
 @api_router.get("/mentorada-mentorias/{mentorada_mentoria_id}", response_model=MentoradaMentoria)
 async def get_mentorada_mentoria(mentorada_mentoria_id: str, current_user: dict = Depends(get_current_user)):
     mentoria = await db.mentorada_mentorias.find_one({'mentorada_mentoria_id': mentorada_mentoria_id}, {'_id': 0})
