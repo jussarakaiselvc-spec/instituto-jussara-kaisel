@@ -104,12 +104,12 @@ const Layout = ({ children, user, onLogout }) => {
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
-          <aside className="absolute left-0 top-0 bottom-0 w-64 backdrop-blur-xl bg-[#111827] border-r border-white/10">
-            <div className="p-6 border-b border-white/10 flex justify-between items-center">
+          <aside className="absolute left-0 top-0 bottom-0 w-64 backdrop-blur-xl bg-[#111827] border-r border-white/10 flex flex-col">
+            <div className="p-4 border-b border-white/10 flex justify-between items-center flex-shrink-0">
               <img
                 src="https://customer-assets.emergentagent.com/job_portal-jussara/artifacts/ydejbjhx_LOGO%20%20KUNDALINI%20.INSTITUCIONAL%20E%20MINHA.png"
                 alt="Instituto Jussara Kaisel"
-                className="w-32 h-auto"
+                className="w-28 h-auto"
               />
               <Button
                 variant="ghost"
@@ -121,12 +121,12 @@ const Layout = ({ children, user, onLogout }) => {
               </Button>
             </div>
 
-            <div className="p-4">
-              <p className="text-sm text-slate-400">Bem-vinda,</p>
-              <p className="text-[#DAA520] font-heading text-lg">{user?.name}</p>
+            <div className="px-4 py-2 flex-shrink-0">
+              <p className="text-xs text-slate-400">Bem-vinda,</p>
+              <p className="text-[#DAA520] font-heading text-base">{user?.name}</p>
             </div>
 
-            <nav className="flex-1 p-4 space-y-2">
+            <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
@@ -135,14 +135,14 @@ const Layout = ({ children, user, onLogout }) => {
                     key={item.path}
                     to={item.path}
                     onClick={() => setSidebarOpen(false)}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 ${
+                    className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-300 ${
                       isActive
                         ? 'bg-[#DAA520]/10 text-[#DAA520] border border-[#DAA520]/30'
                         : 'text-slate-400 hover:text-[#DAA520] hover:bg-white/5'
                     }`}
                   >
-                    <Icon className="w-5 h-5" />
-                    <span className="font-body">{item.label}</span>
+                    <Icon className="w-4 h-4" />
+                    <span className="font-body text-sm">{item.label}</span>
                     {item.path === '/mensagens' && unreadCount > 0 && (
                       <span className="ml-auto w-5 h-5 rounded-full bg-[#DAA520] text-[#0B1120] text-xs flex items-center justify-center font-bold">
                         {unreadCount}
@@ -153,13 +153,13 @@ const Layout = ({ children, user, onLogout }) => {
               })}
             </nav>
 
-            <div className="p-4 border-t border-white/10">
+            <div className="p-3 border-t border-white/10 flex-shrink-0">
               <Button
                 onClick={onLogout}
                 variant="ghost"
-                className="w-full justify-start text-slate-400 hover:text-red-400 hover:bg-white/5"
+                className="w-full justify-start text-slate-400 hover:text-red-400 hover:bg-white/5 text-sm"
               >
-                <LogOut className="w-5 h-5 mr-3" />
+                <LogOut className="w-4 h-4 mr-2" />
                 Sair
               </Button>
             </div>
