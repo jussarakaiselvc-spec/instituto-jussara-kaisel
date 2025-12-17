@@ -808,6 +808,24 @@ const AdminPanel = ({ user }) => {
                               })}
                             </p>
                           </div>
+                          <div className="flex items-center gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => openEditSessao(sessao)}
+                              className="text-slate-400 hover:text-[#DAA520] hover:bg-[#DAA520]/10"
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => deleteSessao(sessao.sessao_id)}
+                              className="text-slate-400 hover:text-red-400 hover:bg-red-500/10"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
                         </div>
                         
                         {sessao.resumo && (
