@@ -309,6 +309,33 @@ const FinanceiroAdmin = () => {
                 />
               </div>
               <div>
+                <Label className="text-slate-300">Moeda</Label>
+                <Select 
+                  value={newFinanceiro.currency} 
+                  onValueChange={(v) => setNewFinanceiro({ ...newFinanceiro, currency: v })}
+                >
+                  <SelectTrigger className="bg-[#0B1120]/50 border-slate-700 text-slate-200">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#111827] border-white/10">
+                    {CURRENCIES.map((c) => (
+                      <SelectItem key={c.code} value={c.code}>
+                        {c.symbol} - {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-slate-300">Data do Pagamento</Label>
+                <Input
+                  type="date"
+                  value={newFinanceiro.data_pagamento}
+                  onChange={(e) => setNewFinanceiro({ ...newFinanceiro, data_pagamento: e.target.value })}
+                  className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                />
+              </div>
+              <div>
                 <Label className="text-slate-300">Observações</Label>
                 <Textarea
                   value={newFinanceiro.observacoes}
