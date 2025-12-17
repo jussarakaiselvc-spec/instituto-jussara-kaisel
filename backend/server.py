@@ -625,6 +625,30 @@ async def get_sessoes_by_mentoria(mentorada_mentoria_id: str, current_user: dict
     sessoes = await db.sessoes.find({'mentorada_mentoria_id': mentorada_mentoria_id}, {'_id': 0}).sort('session_number', 1).to_list(1000)
     return [Sessao(**s) for s in sessoes]
 
+@api_router.put("/sessoes/{sessao_id}", response_model=Sessao)
+async def update_sessao(sessao_id: str, sessao_update: SessaoCreate, admin: dict = Depends(get_admin_user)):
+    """Update a session (admin only)"""
+    sessao = await db.sessoes.find_one({'sessao_id': sessao_id}, {'_id': 0})
+    if not sessao:
+        raise HTTPException(status_code=404, detail="Sessão não encontrada")
+    
+    update_data = sessao_update.model_dump()
+    update_data['session_date'] = sessao_update.session_date.isoformat()
+    
+    await db.sessoes.update_one({'sessao_id': sessao_id}, {'$set': update_data})
+    updated = await db.sessoes.find_one({'sessao_id': sessao_id}, {'_id': 0})
+    return Sessao(**updated)
+
+@api_router.delete("/sessoes/{sessao_id}")
+async def delete_sessao(sessao_id: str, admin: dict = Depends(get_admin_user)):
+    """Delete a session (admin only)"""
+    sessao = await db.sessoes.find_one({'sessao_id': sessao_id}, {'_id': 0})
+    if not sessao:
+        raise HTTPException(status_code=404, detail="Sessão não encontrada")
+    
+    await db.sessoes.delete_one({'sessao_id': sessao_id})
+    return {"message": "Sessão excluída com sucesso"}
+
 # ============ TAREFAS ROUTES ============
 
 @api_router.post("/tarefas", response_model=Tarefa)
