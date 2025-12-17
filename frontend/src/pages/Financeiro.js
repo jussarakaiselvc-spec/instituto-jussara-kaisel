@@ -18,24 +18,42 @@ const Financeiro = ({ user }) => {
 
   const fetchData = async () => {
     try {
-      // Get active mentoria
+      // Get all mentorias
       const mentoriasResponse = await axios.get(`${API}/mentorada-mentorias/my`);
-      const active = mentoriasResponse.data.find(m => m.status === 'ativa') || mentoriasResponse.data[0];
+      const mentorias = mentoriasResponse.data;
       
-      if (active) {
-        setActiveMentoria(active);
+      if (mentorias.length > 0) {
+        // Try to find financeiro in any of the user's mentorias
+        let foundFinanceiro = null;
+        let foundParcelas = [];
+        let mentoriaWithFinanceiro = null;
         
-        try {
-          // Get financeiro
-          const financeiroResponse = await axios.get(`${API}/financeiro/mentoria/${active.mentorada_mentoria_id}`);
-          setFinanceiro(financeiroResponse.data);
-          
-          // Get parcelas
-          const parcelasResponse = await axios.get(`${API}/parcelas/financeiro/${financeiroResponse.data.financeiro_id}`);
-          setParcelas(parcelasResponse.data);
-        } catch (error) {
-          // Financeiro not configured yet
-          console.log('Financeiro not configured');
+        for (const mentoria of mentorias) {
+          try {
+            const financeiroResponse = await axios.get(`${API}/financeiro/mentoria/${mentoria.mentorada_mentoria_id}`);
+            if (financeiroResponse.data) {
+              foundFinanceiro = financeiroResponse.data;
+              mentoriaWithFinanceiro = mentoria;
+              
+              // Get parcelas
+              const parcelasResponse = await axios.get(`${API}/parcelas/financeiro/${financeiroResponse.data.financeiro_id}`);
+              foundParcelas = parcelasResponse.data;
+              break;
+            }
+          } catch (error) {
+            // This mentoria doesn't have financeiro, continue
+            continue;
+          }
+        }
+        
+        if (foundFinanceiro) {
+          setActiveMentoria(mentoriaWithFinanceiro);
+          setFinanceiro(foundFinanceiro);
+          setParcelas(foundParcelas);
+        } else {
+          // Set first active mentoria even without financeiro
+          const active = mentorias.find(m => m.status === 'ativa') || mentorias[0];
+          setActiveMentoria(active);
         }
       }
     } catch (error) {
