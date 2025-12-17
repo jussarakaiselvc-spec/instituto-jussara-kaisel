@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Video, Music, Calendar, FileText } from 'lucide-react';
+import { Video, Music, Calendar, FileText, ChevronDown, ChevronUp, ExternalLink, FolderOpen, Play } from 'lucide-react';
 import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -10,6 +10,7 @@ const Sessoes = ({ user }) => {
   const [sessoes, setSessoes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeMentoria, setActiveMentoria] = useState(null);
+  const [expandedSessao, setExpandedSessao] = useState(null);
 
   useEffect(() => {
     fetchData();
