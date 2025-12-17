@@ -110,9 +110,20 @@ const AgendamentosIntegrations = () => {
         </div>
         <Button
           onClick={saveSettings}
+          disabled={saving}
           className="mt-6 bg-[#DAA520] text-[#0B1120] hover:bg-[#B8860B]"
         >
-          Salvar Configurações
+          {saving ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Salvando...
+            </>
+          ) : (
+            <>
+              <Save className="w-4 h-4 mr-2" />
+              Salvar Configurações
+            </>
+          )}
         </Button>
       </div>
 
