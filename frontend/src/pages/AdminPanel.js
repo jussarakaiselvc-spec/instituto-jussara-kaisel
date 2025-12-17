@@ -828,14 +828,25 @@ const AdminPanel = ({ user }) => {
             <h2 className="text-2xl font-heading font-medium text-slate-200 mb-6">Criar Nova Tarefa</h2>
             <div className="space-y-4">
               <div>
-                <Label className="text-slate-300">Mentorada/Mentoria (ID)</Label>
-                <Input
-                  value={newTarefa.mentorada_mentoria_id}
-                  onChange={(e) => setNewTarefa({ ...newTarefa, mentorada_mentoria_id: e.target.value })}
-                  data-testid="tarefa-mentoria-id-input"
-                  placeholder="ID da mentoria atribuída"
-                  className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
-                />
+                <Label className="text-slate-300">Mentorada/Mentoria</Label>
+                <Select 
+                  value={newTarefa.mentorada_mentoria_id} 
+                  onValueChange={(v) => setNewTarefa({ ...newTarefa, mentorada_mentoria_id: v })}
+                >
+                  <SelectTrigger className="bg-[#0B1120]/50 border-slate-700 text-slate-200">
+                    <SelectValue placeholder="Selecione a mentorada..." />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#111827] border-white/10">
+                    {mentoradaMentorias.map((mm) => (
+                      <SelectItem key={mm.mentorada_mentoria_id} value={mm.mentorada_mentoria_id}>
+                        {getMentoradaMentoriaLabel(mm)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {mentoradaMentorias.length === 0 && (
+                  <p className="text-xs text-yellow-400 mt-1">⚠️ Nenhuma mentorada vinculada. Atribua uma mentoria primeiro.</p>
+                )}
               </div>
               <div>
                 <Label className="text-slate-300">Descrição</Label>
