@@ -179,8 +179,16 @@ const FinanceiroAdmin = () => {
       valor_total: financeiro.valor_total.toString(),
       forma_pagamento: financeiro.forma_pagamento,
       numero_parcelas: financeiro.total_parcelas,
+      currency: financeiro.currency || 'BRL',
+      data_pagamento: financeiro.data_pagamento ? financeiro.data_pagamento.split('T')[0] : '',
       observacoes: financeiro.observacoes || '',
     });
+  };
+
+  const formatCurrency = (value, currencyCode = 'BRL') => {
+    const currency = getCurrencyByCode(currencyCode);
+    const symbol = currency?.symbol || 'R$';
+    return `${symbol} ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
   };
 
   const updateParcelaStatus = async (parcela) => {
