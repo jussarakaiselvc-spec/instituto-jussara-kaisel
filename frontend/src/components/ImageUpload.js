@@ -40,8 +40,8 @@ const ImageUpload = ({ value, onChange, label = "Imagem" }) => {
         },
       });
       
-      // Construct full URL
-      const imageUrl = `${BACKEND_URL}${response.data.url}`;
+      // Construct full URL with /api prefix for proper routing
+      const imageUrl = `${BACKEND_URL}/api${response.data.url}`;
       onChange(imageUrl);
       toast.success('Imagem enviada com sucesso!');
     } catch (error) {
