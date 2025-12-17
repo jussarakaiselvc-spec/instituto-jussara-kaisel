@@ -827,11 +827,6 @@ async def update_agendamento(agendamento_id: str, agendamento: AgendamentoCreate
     
     return Agendamento(**updated)
 
-@api_router.get("/mentorada-mentorias/all", response_model=List[MentoradaMentoria])
-async def list_all_mentorada_mentorias(admin: dict = Depends(get_admin_user)):
-    mentorias = await db.mentorada_mentorias.find({}, {'_id': 0}).to_list(1000)
-    return [MentoradaMentoria(**m) for m in mentorias]
-
 # ============ GOOGLE CALENDAR ROUTES ============
 
 @api_router.get("/google-calendar/auth-url")
