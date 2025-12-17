@@ -18,148 +18,175 @@ Crie um portal web profissional para o Instituto Jussara Kaisel, com login indiv
 4.  **Requisitos Gerais:**
     *   Interface limpa, profissional e responsiva.
     *   Não processar pagamentos, apenas exibir informações.
-    *   O objetivo é centralizar a experiência da mentorada, substituindo o WhatsApp e arquivos soltos.
-    *   Integração com ferramentas de agendamento (YouCanBookMe, Calendly, Google Agenda).
+    *   O objetivo é centralizar a experiência da mentorada.
+    *   Integração com ferramentas de agendamento (Calendly, Google Agenda).
 
-**User's preferred language**: Portuguese (Portugal/Brazil). The next agent MUST respond in Portuguese.
+**User's preferred language**: Portuguese (Brazil). The next agent MUST respond in Portuguese.
 
 **what currently exists?**
-A full-stack web application has been developed using a React frontend and a FastAPI backend with a MongoDB database. The core features from the problem statement are implemented, including a two-tier user system (admin/mentee), authentication, and dedicated pages for dashboard, mentorship details, sessions, tasks, financials, and messaging. A comprehensive admin panel was built to manage all aspects of the platform, including mentees, mentorships, financial overviews, and tasks. A profile page for users to change their credentials has also been created.
+A full-stack application using React, FastAPI, and MongoDB. It features a two-role system (admin/mentee) with JWT authentication.
+
+The **Admin Panel** is a comprehensive tabbed interface for managing:
+*   Mentees (CRUD)
+*   Mentorias (CRUD with cover image uploads)
+*   Sessões (CRUD, with links to mentees)
+*   Tarefas (CRUD, with links to mentees)
+*   Financeiro (CRUD with payment methods, currency selection)
+*   Produtos (CRUD with vitrine style layout, cover image uploads, and pricing)
+*   Agendamentos (UI for Calendly/Google Calendar configuration)
+
+The **Mentee Portal** includes:
+*   A Dashboard summarizing mentoria status, tasks, and financials.
+*   A full-featured Profile page where users can upload a profile picture and edit their name, country, phone, address, and preferred currency.
+*   Dedicated pages for Minhas Mentorias, Tarefas, Calendário, and Financeiro.
+
+A direct file upload system has been implemented for cover images (mentorias, produtos) and profile pictures, storing files on the server.
 
 **Last working item**:
-*   **Last item agent was working:** Implementing a unified Agendamentos (Scheduling) page in the Admin Panel to integrate both Calendly and Google Calendar, as requested by the user. The agent had just created a new component  and added its import statement to the  file.
+*   **Last item agent was working:** Implementing a large set of user-requested features, primarily focused on enhancing financial tracking, session management, and adding an agenda to the dashboard. The agent had just started creating the backend endpoints and frontend components for these features.
 *   **Status:** IN PROGRESS
 *   **Agent Testing Done:** N
-*   **Which testing method agent to use?** Frontend testing agent to verify the new UI components for Calendly and Google Calendar integration.
+*   **Which testing method agent to use?** Both (This is a large feature set impacting frontend and backend).
 *   **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
-*   **Issue 1: Compilation Errors in AdminPanel.js (P0)**
-    *   **Description:** The agent previously fixed syntax errors in  related to incorrect string escaping. However, the last user message Compiled with problems suggests there might be other issues, or the previous fix was incomplete. The agent found and fixed two errors, but the frontend was still taking a long time to compile, which can indicate underlying problems.
-    *   **Attempted fixes:** The agent identified and corrected invalid escape sequences on lines 600 and 606 of .
+*   **Issue 1: Detailed Financial Editing (P0)**
+    *   **Description:** The user needs to edit individual payments for each mentee, including the ability to mark installments as paid, record the payment date, and set the value paid. The system should also display prices in the user's selected currency.
     *   **Next debug checklist:**
-        1.  Carefully review  for any remaining syntax errors, especially around string literals and JSX.
-        2.  Check the browser's developer console for runtime errors after the app compiles.
-        3.  Ensure all imported components, including the newly added  and , are correctly defined and exported.
-    *   **Why fix this issue?** The Admin Panel is critical for the user (the mentor) and is currently unusable due to compilation errors.
+        1.  Create a new data model (or modify the existing  model) to store individual payment records (parcelas) with , , and .
+        2.  Implement backend endpoints (e.g., ) to update these records.
+        3.  Create a modal or dedicated view in the  component to display and edit each installment of a financial record.
+        4.  Implement logic to convert and display currency values based on the mentee's .
+    *   **Why fix this issue?** It is a critical requirement for the user to manage her business finances accurately.
     *   **Status:** IN PROGRESS
-    *   **Is recurring issue?** Y
-    *   **Should Test frontend/backend/both after fix?** frontend
-    *   **Blocked on other issue:** None.
+    *   **Is recurring issue?** N
+    *   **Should Test frontend/backend/both after fix?** both
+
+*   **Issue 2: Session Editing (P1)**
+    *   **Description:** The user can view session details in a modal but cannot edit them after creation. An Edit button and functionality are required.
+    *   **Next debug checklist:**
+        1.  The agent already added a  endpoint and UI components. The next step is to test the entire flow to ensure it works correctly.
+        2.  Verify that clicking the Edit button opens a pre-filled form and that saving the changes updates the session correctly.
+    *   **Why fix this issue?** Allows the admin to correct mistakes or update session details without having to delete and recreate them.
+    *   **Status:** IN PROGRESS
+    *   **Is recurring issue?** N
+    *   **Should Test frontend/backend/both after fix?** both
 
 **In progress Task List**:
-*   **Task 1: Complete Calendly and Google Calendar Integration (P0)**
-    *   **Description:** Add UI and backend logic to allow the admin to set up scheduling via Calendly (embedding a link) and Google Calendar (OAuth integration).
-    *   **Where to resume:** The component  is created but empty. The next step is to build the UI inside this component for both Calendly and Google Calendar setup. Then, update  with endpoints to save/retrieve these configurations.
-    *   **What will be achieved with this?** The user will be able to manage her appointment scheduling directly within the portal using her preferred tools.
+*   **Task 1: Display Agenda on Dashboard (P0)**
+    *   **Description:** The user wants the mentee's dashboard to display a list or calendar of upcoming and past sessions.
+    *   **Where to resume:** The agent already updated  to fetch sessions and added a placeholder UI. The next step is to verify the backend endpoint () works as intended for the logged-in mentee and to refine the UI to be a clear, user-friendly agenda.
+    *   **What will be achieved with this?** Improves the mentee's user experience by providing a clear overview of their schedule.
     *   **Status:** IN PROGRESS
     *   **Should Test frontend/backend/both after fix?** both
-    *   **Blocked on something:** Blocked by **Issue 1**, as the Admin Panel must compile to add and test this new feature.
+    *   **Blocked on something:** None.
 
 **Upcoming and Future Tasks**
 *   **Upcoming Tasks:**
-    *   **(P1) Full Real-Time Notifications:** The user requested notificação em tempo real. The current implementation uses badges that update on page load. A full implementation using WebSockets for instant notifications (e.g., when a new message arrives) has not been done.
+    *   **(P1) Full Real-Time Notifications:** The current implementation uses badges that update on page load. A full implementation using WebSockets for instant notifications (e.g., when a new message arrives) is still pending.
+    *   **(P2) Centralized Mentee History Page:** The user requested a single, editable page for each mentee that consolidates all their information (profile, sessions, financials, tasks). This was part of the last user request but hasn't been fully started.
 *   **Future Tasks:**
     *   None explicitly defined.
 
 **Completed work in this session**
 *   **Recently completed:**
-    *   **Admin CRM Refactor:** Created a comprehensive Admin Dashboard () and a tabbed Admin Panel () to manage all platform data. (DONE)
-    *   **Admin Financial Overview:** Implemented a component () and endpoint to show a consolidated financial status of all mentees. (DONE)
-    *   **Admin Tasks Overview:** Implemented a component () and endpoint for the admin to view and filter all mentee tasks. (DONE)
-    *   **Profile Management:** Created a  page and backend endpoints for users to change their email and password. (DONE)
-    *   **Messaging System Fix:** Corrected logic to allow the admin to view conversations with all mentees from a dedicated  page. (DONE)
-    *   **Initial Application Scaffolding:** Built the entire foundational structure of the frontend and backend. (DONE)
+    *   **CRUD for Mentees & Mentorias:** Added Edit/Delete functionality. (DONE)
+    *   **CRUD for Financials:** Added Create/Edit/Delete with multiple payment methods. (DONE)
+    *   **Direct Image Upload:** Implemented a system for uploading images for mentorias, products, and user profiles, fixing pathing issues so images display correctly. (DONE)
+    *   **Enhanced Profile Page:** Created a comprehensive profile page for both admin and mentees to edit personal info, location, contact details, currency, and upload a profile picture. (DONE)
+    *   **Enhanced Admin UI:** Implemented modals to view mentees linked to a mentoria and to view sessions linked to a mentee. (DONE)
+    *   **UI/UX Fixes:** Added a view password icon on the login page. Fixed numerous dropdowns to show selectable data instead of requiring manual ID input. (DONE)
+    *   **Backend Bug Fix:** Corrected a route ordering issue in FastAPI that caused  to fail. (DONE)
+    *   **Added Link Fields:** Added fields for Google Drive links in Sessions and Sales Page links in Mentorias. (DONE)
+    *   **Product Vitrine:** Styled the products page into a grid-based showcase with images and pricing. (DONE)
+    *   **Testing:** Successfully ran the testing agent twice to validate major feature completions. (DONE)
 
 **Earlier issues found/mentioned but not fixed**
-*   **Issue 1: True Real-Time Notifications**
-    *   **Debug checklist:**
-        1.  Choose a WebSocket library for FastAPI (e.g., usage: websockets [--version | <uri>]).
-        2.  Implement a WebSocket endpoint in  to handle connections.
-        3.  Broadcast events (e.g., ) to relevant connected clients.
-        4.  On the frontend, establish a WebSocket connection and listen for events to show real-time toasts or update UI without a full refresh.
-    *   **Why to solve this issue and what will be achieved with this?** It would fulfill the user's request for real-time notifications more accurately and improve the user experience by making the app more dynamic.
-    *   **Should Test frontend/backend/both after fix:** both
-    *   **Is recurring issue?** N
+*   None other than the pending tasks.
 
 **Known issue recurrence from previous fork**
-*   None.
+*   **Issue recurrence in previous fork:**  compilation errors.
+*   **Recurrence count:** 1 (in this session)
+*   **Status:** RESOLVED (The agent fixed the compilation errors early on).
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-*   **Frontend:** React, Tailwind CSS,  for API calls.
-*   **Backend:** FastAPI,  for asynchronous MongoDB access,  for data modeling,  for JWT authentication.
-*   **Database:** MongoDB
-*   **Authentication:** JWT-based with role separation ('admin', 'user').
+*   **Frontend:** React, Tailwind CSS, .
+*   **Backend:** FastAPI,  (async MongoDB), ,  (JWT). File uploads are handled with  and stored locally.
+*   **Database:** MongoDB.
+*   **Authentication:** JWT-based with role separation ('admin', 'mentee').
 
 **key DB schema**
-*   : { name, email, hashed_password, role, created_at }
-*   : { user_id, name, start_date, status, diagnosis_pdf_url, key_points, current_focus }
-*   : { mentoria_id, session_number, theme, date, video_url, audio_url, summary }
-*   : { mentoria_id, description, status, reflection }
-*   : { sender_id, receiver_id, content, timestamp, read }
-*   : { mentoria_id, total_value, payment_method, installments: [{status, date}] }
-*   : { name, description }
-*   : { user_id, title, start, end } (for Google Calendar events)
+*   : { ..., **profile_image_url, country, phone, address, preferred_currency** }
+*   : { ..., **cover_image_url, sales_page_link** }
+*   : { ..., **drive_link** }
+*   : { ..., **cover_image_url, price** }
+*   : { ..., **payment_date, currency** }
 
 **changes in tech stack**
 *   None.
 
 **All files of reference**
-*   : Contains all backend logic, API endpoints, and database models. It's the sole file for the backend.
-*   : The central hub for all admin functionality. It's a large, complex component that has been the source of recent compilation issues.
-*   : Defines all frontend routes and handles role-based rendering.
-*   : New, empty component intended for Calendly/Google Calendar integration.
-*   : Instructions for the user to set up Google Calendar API credentials.
+*   : All backend logic resides here. Heavily modified.
+*   : The core of the admin UI. Heavily modified.
+*   : The user profile page. Completely overhauled.
+*   : The mentee dashboard. Recently modified to include an agenda.
+*   : Component for financial management. Recently modified.
+*   : New component for handling all file uploads.
+*   : New file containing country and currency data.
 
 **Areas that need refactoring**
-*    is a monolithic file. It should be broken down into multiple files using FastAPI's  for better organization (e.g., separate routers for auth, users, mentorias).
-*    is very large. The process of breaking it down into smaller components (like ) should continue to improve maintainability.
+*    and  are monolithic and have grown excessively large. Future features, especially the Mentee History page, should be built in new, separate files/components to avoid further bloating these files and improve maintainability.
 
 **key api endpoints**
-*   : POST for user login.
-*   : GET current user details.
-*   : GET statistics for the admin dashboard.
-*   : GET financial summary for all mentees.
-*   : GET task summary for all mentees.
-*   , , , etc.: Standard CRUD endpoints for core resources.
-*   : PUT to update user email/password.
-*   , : Endpoints for Google API OAuth2 flow.
+*   : (POST) For all file uploads.
+*   : (PUT) To update the extended user profile.
+*   : (PUT) To edit a session.
+*   : (GET) For the new comprehensive history view.
+*   : (GET) For fetching the logged-in mentee's sessions.
+*   : (GET) For an admin to get all sessions.
 
 **Critical Info for New Agent**
-*   You must respond in **Portuguese**.
-*   The immediate priority is to fix the compilation errors in . The application is currently broken for the admin user.
-*   Once the Admin Panel is working, resume the implementation of the scheduling integrations (Calendly/Google Calendar) in the  component.
-*   Admin credentials:  / .
-*   Test mentee credentials:  / .
+*   **You must respond in Portuguese.**
+*   The immediate priority is to complete the features requested by the user in the last interactions, which are now listed in the Pending Issues and In Progress Tasks sections.
+*   Focus on **Issue 1 (Detailed Financial Editing)** and **Task 1 (Dashboard Agenda)** as they are top priorities for the user.
+*   The codebase uses monolithic files (, ). Be mindful of their size. For new, distinct features like the Mentee History page, create new files instead of adding to the existing ones.
+*   File uploads are now handled by the backend and served from the  path.
+*   User credentials are frequently reset upon server restarts or by user actions. The latest known credentials are provided below.
 
 **documents created in this job**
 *   
+*   
+*    (Code backup for user)
 
 **Last 10 User Messages and any pending user messages**
-1.  **User (message 163):** Reports admin panel is lacking features (product creation, financial/task views, mentorship management) and requests YouCanBookMe integration. (Status: Partially Actioned - Admin panel was improved, but product creation might still be an issue).
-2.  **User (message 175):** Mentions  file is too large. (Status: Acknowledged by agent).
-3.  **User (message 206):** Compiled with problems: pq está abrindo assim (why is it opening like this). (Status: IN PROGRESS - This is the critical issue).
-4.  **User (message 225):** na parte do calendaria vc poderia por o calendly e tb o google agenda. (In the calendar part, you could add Calendly and also Google Agenda). (Status: IN PROGRESS - This is the current feature task).
-5.  **Remaining user messages:** Are agent responses or user giving go-ahead.
+The last several user messages represent a rapid cycle of feature requests and feedback.
+1.  **Request:** Add cover image to mentorias. (Status: DONE)
+2.  **Request:** Help with exporting code to GitHub/HostGator. (Status: DONE - Agent created a downloadable ZIP as a workaround).
+3.  **Bug:** Cadastro de mentoradas form is not working. (Status: User Error - Resolved).
+4.  **Request:** Add sales page link to Mentorias and cover image to Products. Fix dropdowns in Sessions/Tasks/Financials to be selectable. (Status: DONE).
+5.  **Request:** A comprehensive test of the entire site to catch all issues. (Status: DONE - Agent ran testing agent and fixed a key backend bug).
+6.  **Bug:** Uploaded Google Drive images are not appearing. (Status: DONE - Agent explained the issue and implemented a direct upload system instead).
+7.  **Request:** Implement the direct upload system. (Status: DONE).
+8.  **Bug:** Uploaded images still not appearing. (Status: DONE - Agent fixed the URL path from  to ).
+9.  **Request:** Add a Google Drive link field to Sessions. (Status: DONE).
+10. **Request (Current Task):** A large set of new features: add payment date to financials, handle multiple currencies, add phone/country to user profiles, upload profile photo, add an edit button to sessions, and show an agenda on the dashboard. (Status: IN PROGRESS).
 
 **Project Health Check:**
-*   **Broken:** The frontend is currently failing to compile reliably due to errors in , making the admin section unusable.
-*   **Mocked:** All data is test data created via API calls. There is no production data.
+*   **Broken:** None.
+*   **Mocked:** All data is test data.
 
 **3rd Party Integrations**
-*   **Google Calendar:** Partially implemented. Backend OAuth flow exists, but the frontend integration is pending. Requires user-provided API keys as per .
-*   **Calendly:** Planned. Implementation will likely involve embedding a user-provided Calendly link in an iframe.
-*   **YouCanBookMe:** Requested by the user but likely superseded by the Calendly/Google Calendar request.
-*   **YouTube/Spotify:** No direct integration. The platform allows storing links to content on these services.
+*   **Google Calendar:** Partially implemented. Backend OAuth flow exists, but frontend integration is pending.
+*   **Calendly / YouCanBookMe:** Planned, with UI placeholders created.
 
 **Testing status**
-*   **Testing agent used after significant changes:** NO
+*   **Testing agent used after significant changes:** YES (used twice successfully for major feature batches).
 *   **Troubleshoot agent used after agent stuck in loop:** NO
 *   **Test files created:** None.
-*   **Known regressions:** The  component has become unstable after multiple large edits, leading to recurring compilation errors.
+*   **Known regressions:** None currently.
 
 **Credentials to test flow:**
 *   **Admin:**
@@ -170,6 +197,6 @@ A full-stack web application has been developed using a React frontend and a Fas
     *   Password: 
 
 **What agent forgot to execute**
-*   The agent did not fully complete the Calendly/Google Calendar integration task; it only created the placeholder component and imported it.
-*   The agent has not implemented a true real-time notification system (e.g., using WebSockets) as implied by the user's notificação em tempo real request, opting for badge counters that update on refresh.
-*   The agent may not have fully addressed the user's request for autonomy to create other mentorships in the admin panel. This should be verified once the panel is working again.</analysis>
+*   The agent has not fully implemented the currency conversion logic, despite adding a currency selector to the UI.
+*   The Upcoming Task for a centralized, editable Mentee History page was requested but has not been started yet.
+*   The long-standing Future Task of implementing real-time notifications via WebSockets remains unaddressed.</analysis>

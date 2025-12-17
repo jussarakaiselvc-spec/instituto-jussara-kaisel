@@ -4,7 +4,7 @@ from datetime import datetime
 import json
 
 class InstitutoJussaraKaiselAPITester:
-    def __init__(self, base_url="https://kaisel-institute.preview.emergentagent.com"):
+    def __init__(self, base_url="https://mentoria-portal.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.admin_token = None
