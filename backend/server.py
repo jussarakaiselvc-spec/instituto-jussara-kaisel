@@ -106,6 +106,7 @@ class SessaoBase(BaseModel):
     session_date: datetime
     video_url: Optional[str] = None
     audio_url: Optional[str] = None
+    drive_url: Optional[str] = None  # Link do Drive para materiais (PDF, vídeos, etc)
     resumo: Optional[str] = None
 
 class SessaoCreate(SessaoBase):
