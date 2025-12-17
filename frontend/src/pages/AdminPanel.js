@@ -34,7 +34,12 @@ const AdminPanel = ({ user }) => {
   const [mentorias, setMentorias] = useState([]);
   const [produtos, setProdutos] = useState([]);
   const [mentoradaMentorias, setMentoradaMentorias] = useState([]);
+  const [sessoes, setSessoes] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // View details states
+  const [selectedMentoria, setSelectedMentoria] = useState(null);
+  const [selectedMentorada, setSelectedMentorada] = useState(null);
 
   useEffect(() => {
     fetchAllData();
@@ -42,16 +47,18 @@ const AdminPanel = ({ user }) => {
 
   const fetchAllData = async () => {
     try {
-      const [usersRes, mentoriasRes, produtosRes, mmRes] = await Promise.all([
+      const [usersRes, mentoriasRes, produtosRes, mmRes, sessoesRes] = await Promise.all([
         axios.get(`${API}/users`),
         axios.get(`${API}/mentorias`),
         axios.get(`${API}/produtos`),
         axios.get(`${API}/mentorada-mentorias/all`),
+        axios.get(`${API}/sessoes`),
       ]);
       setUsers(usersRes.data);
       setMentorias(mentoriasRes.data);
       setProdutos(produtosRes.data);
       setMentoradaMentorias(mmRes.data);
+      setSessoes(sessoesRes.data);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast.error('Erro ao carregar dados');
