@@ -118,44 +118,84 @@ const MinhaMentoria = ({ user }) => {
       </h1>
 
       <div className="space-y-6">
-        {/* Mentoria Info Card */}
-        <div className="relative overflow-hidden rounded-2xl bg-[#111827]/80 backdrop-blur-md border border-white/5 shadow-xl p-8">
-          <div className="absolute inset-0 opacity-5">
-            <img
-              src="https://images.unsplash.com/photo-1584406029443-6f2aa671b5dd?crop=entropy&cs=srgb&fm=jpg&q=85"
-              alt=""
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="relative z-10">
-            <div className="flex items-center space-x-2 mb-4">
-              <Activity className="w-6 h-6 text-[#DAA520]" />
-              <span className="text-sm tracking-wide uppercase opacity-70 text-slate-400">Mentoria</span>
+        {/* Mentoria Hero Card with Cover Image */}
+        <div className="relative overflow-hidden rounded-2xl bg-[#111827]/80 backdrop-blur-md border border-white/5 shadow-xl">
+          {/* Cover Image - Full Width */}
+          {mentoriaDetails?.cover_image_url ? (
+            <div className="relative w-full h-48 sm:h-64 md:h-80 overflow-hidden">
+              <img
+                src={mentoriaDetails.cover_image_url.startsWith('/uploads') 
+                  ? `${BACKEND_URL}/api${mentoriaDetails.cover_image_url}` 
+                  : mentoriaDetails.cover_image_url}
+                alt={mentoriaDetails?.name}
+                className="w-full h-full object-cover"
+              />
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#111827] via-[#111827]/60 to-transparent" />
+              
+              {/* Title over image */}
+              <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Activity className="w-5 h-5 text-[#DAA520]" />
+                  <span className="text-xs sm:text-sm tracking-wide uppercase text-[#DAA520]/80">Minha Mentoria Ativa</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-white drop-shadow-lg" data-testid="mentoria-name">
+                  {mentoriaDetails?.name || 'Carregando...'}
+                </h2>
+              </div>
             </div>
-            <h2 className="text-3xl md:text-4xl font-heading font-medium text-[#DAA520] mb-6" data-testid="mentoria-name">
-              {mentoriaDetails?.name || 'Carregando...'}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <p className="text-sm text-slate-400 mb-1">Data de Início</p>
+          ) : (
+            <div className="relative w-full h-48 sm:h-64 bg-gradient-to-br from-[#DAA520]/20 via-[#111827] to-[#0B1120] flex items-center justify-center">
+              <div className="text-center p-6">
+                <Activity className="w-16 h-16 text-[#DAA520]/40 mx-auto mb-4" />
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-[#DAA520]" data-testid="mentoria-name">
+                  {mentoriaDetails?.name || 'Carregando...'}
+                </h2>
+              </div>
+            </div>
+          )}
+          
+          {/* Info Section */}
+          <div className="p-6 sm:p-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+              <div className="bg-[#0B1120]/50 rounded-xl p-4">
+                <p className="text-xs sm:text-sm text-slate-400 mb-1">Data de Início</p>
                 <div className="flex items-center space-x-2">
                   <Calendar className="w-4 h-4 text-[#DAA520]" />
-                  <p className="text-lg text-slate-200" data-testid="start-date">
+                  <p className="text-base sm:text-lg text-slate-200" data-testid="start-date">
                     {new Date(selectedMentoria.start_date).toLocaleDateString('pt-BR')}
                   </p>
                 </div>
               </div>
-              <div>
-                <p className="text-sm text-slate-400 mb-1">Status</p>
-                <p className="text-lg text-slate-200 capitalize" data-testid="mentoria-status">{selectedMentoria.status}</p>
+              <div className="bg-[#0B1120]/50 rounded-xl p-4">
+                <p className="text-xs sm:text-sm text-slate-400 mb-1">Status</p>
+                <div className="flex items-center space-x-2">
+                  <span className={`w-2 h-2 rounded-full ${selectedMentoria.status === 'ativa' ? 'bg-green-400' : 'bg-yellow-400'}`} />
+                  <p className="text-base sm:text-lg text-slate-200 capitalize" data-testid="mentoria-status">{selectedMentoria.status}</p>
+                </div>
               </div>
-              {mentoriaDetails?.description && (
-                <div className="col-span-1 md:col-span-3">
-                  <p className="text-sm text-slate-400 mb-1">Descrição</p>
-                  <p className="text-slate-300">{mentoriaDetails.description}</p>
+              {mentoriaDetails?.sales_link && (
+                <div className="bg-[#0B1120]/50 rounded-xl p-4">
+                  <p className="text-xs sm:text-sm text-slate-400 mb-1">Página da Mentoria</p>
+                  <a 
+                    href={mentoriaDetails.sales_link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-[#DAA520] hover:text-[#B8860B] text-sm flex items-center space-x-1"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    <span>Ver página</span>
+                  </a>
                 </div>
               )}
             </div>
+            
+            {mentoriaDetails?.description && (
+              <div className="mt-6 bg-[#0B1120]/30 rounded-xl p-4">
+                <p className="text-xs sm:text-sm text-slate-400 mb-2">Sobre a Mentoria</p>
+                <p className="text-slate-300 text-sm sm:text-base leading-relaxed">{mentoriaDetails.description}</p>
+              </div>
+            )}
           </div>
         </div>
 
