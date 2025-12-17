@@ -218,7 +218,7 @@ const MinhaMentoria = ({ user }) => {
                     className={`relative overflow-hidden rounded-2xl border shadow-xl transition-all duration-300 ${
                       isUnlocked 
                         ? 'bg-[#111827]/80 border-[#DAA520]/30 hover:border-[#DAA520]/50' 
-                        : 'bg-[#111827]/50 border-white/5 opacity-75'
+                        : 'bg-[#111827]/80 border-white/10 hover:border-white/20'
                     }`}
                   >
                     {/* Cover Image */}
