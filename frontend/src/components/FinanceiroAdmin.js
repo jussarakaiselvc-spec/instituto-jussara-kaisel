@@ -111,11 +111,15 @@ const FinanceiroAdmin = () => {
     
     setCreating(true);
     try {
-      await axios.post(`${API}/financeiro`, {
+      const payload = {
         ...newFinanceiro,
         valor_total: parseFloat(newFinanceiro.valor_total),
         numero_parcelas: parseInt(newFinanceiro.numero_parcelas),
-      });
+      };
+      if (newFinanceiro.data_pagamento) {
+        payload.data_pagamento = new Date(newFinanceiro.data_pagamento).toISOString();
+      }
+      await axios.post(`${API}/financeiro`, payload);
       toast.success('Registro financeiro criado com sucesso!');
       setCreateDialogOpen(false);
       setNewFinanceiro({
@@ -123,6 +127,8 @@ const FinanceiroAdmin = () => {
         valor_total: '',
         forma_pagamento: '',
         numero_parcelas: 1,
+        currency: 'BRL',
+        data_pagamento: '',
         observacoes: '',
       });
       fetchFinanceiros();
