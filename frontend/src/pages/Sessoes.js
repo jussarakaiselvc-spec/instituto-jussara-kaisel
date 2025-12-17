@@ -84,71 +84,132 @@ const Sessoes = ({ user }) => {
         Sessões
       </h1>
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         {sessoes.map((sessao, index) => {
           const embedUrl = getYouTubeEmbedUrl(sessao.video_url);
+          const isExpanded = expandedSessao === sessao.sessao_id;
+          const hasContent = sessao.video_url || sessao.audio_url || sessao.drive_link || sessao.resumo;
           
           return (
             <div
               key={sessao.sessao_id}
               data-testid={`sessao-${index}`}
-              className="relative overflow-hidden rounded-2xl bg-[#111827]/80 backdrop-blur-md border border-white/5 shadow-xl p-8 group hover:border-[#DAA520]/30 transition-all duration-500"
+              className="relative overflow-hidden rounded-2xl bg-[#111827]/80 backdrop-blur-md border border-white/5 shadow-xl transition-all duration-300"
             >
-              <div className="flex items-start space-x-4 mb-6">
-                <div className="w-12 h-12 rounded-full bg-[#DAA520]/10 flex items-center justify-center flex-shrink-0">
-                  <span className="text-[#DAA520] font-heading text-xl font-semibold">{sessao.session_number}</span>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-heading font-medium text-slate-200 mb-2" data-testid={`sessao-tema-${index}`}>
-                    {sessao.tema}
-                  </h3>
-                  <div className="flex items-center space-x-2 text-slate-400">
-                    <Calendar className="w-4 h-4" />
-                    <span className="text-sm" data-testid={`sessao-date-${index}`}>
-                      {new Date(sessao.session_date).toLocaleDateString('pt-BR')}
-                    </span>
+              {/* Header - Always visible, clickable */}
+              <button
+                onClick={() => setExpandedSessao(isExpanded ? null : sessao.sessao_id)}
+                className="w-full p-4 sm:p-6 flex items-center justify-between hover:bg-white/5 transition-colors"
+              >
+                <div className="flex items-center space-x-3 sm:space-x-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#DAA520]/10 flex items-center justify-center flex-shrink-0">
+                    <span className="text-[#DAA520] font-heading text-lg sm:text-xl font-semibold">{sessao.session_number}</span>
                   </div>
-                </div>
-              </div>
-
-              {embedUrl && (
-                <div className="mb-6 rounded-xl overflow-hidden">
-                  <div className="aspect-video">
-                    <iframe
-                      src={embedUrl}
-                      title={`Sessão ${sessao.session_number} - ${sessao.tema}`}
-                      className="w-full h-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </div>
-                </div>
-              )}
-
-              {sessao.audio_url && (
-                <div className="mb-6">
-                  <div className="flex items-center space-x-3 p-4 bg-[#0B1120]/50 rounded-xl border border-slate-700">
-                    <Music className="w-5 h-5 text-[#DAA520]" />
-                    <div className="flex-1">
-                      <p className="text-sm text-slate-400 mb-1">Áudio da Sessão</p>
-                      <a
-                        href={sessao.audio_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        data-testid={`sessao-audio-${index}`}
-                        className="text-[#DAA520] hover:text-[#B8860B] text-sm transition-colors"
-                      >
-                        Ouvir no Spotify
-                      </a>
+                  <div className="text-left">
+                    <h3 className="text-lg sm:text-xl font-heading font-medium text-slate-200" data-testid={`sessao-tema-${index}`}>
+                      {sessao.tema || `Sessão ${sessao.session_number}`}
+                    </h3>
+                    <div className="flex items-center space-x-2 text-slate-400">
+                      <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <span className="text-xs sm:text-sm" data-testid={`sessao-date-${index}`}>
+                        {new Date(sessao.session_date).toLocaleDateString('pt-BR', { 
+                          weekday: 'short', 
+                          day: '2-digit', 
+                          month: 'short', 
+                          year: 'numeric' 
+                        })}
+                      </span>
                     </div>
                   </div>
                 </div>
-              )}
+                <div className="flex items-center space-x-2">
+                  {hasContent && (
+                    <span className="text-xs text-[#DAA520] bg-[#DAA520]/10 px-2 py-1 rounded-full hidden sm:inline">
+                      {[sessao.video_url && 'Vídeo', sessao.audio_url && 'Áudio', sessao.drive_link && 'Materiais'].filter(Boolean).join(' • ')}
+                    </span>
+                  )}
+                  {isExpanded ? (
+                    <ChevronUp className="w-5 h-5 text-[#DAA520]" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-slate-400" />
+                  )}
+                </div>
+              </button>
 
-              {sessao.resumo && (
-                <div>
-                  <div className="flex items-center space-x-2 mb-3">
-                    <FileText className="w-5 h-5 text-[#DAA520]" />
+              {/* Expanded Content */}
+              {isExpanded && (
+                <div className="px-4 sm:px-6 pb-6 space-y-4 border-t border-white/5 pt-4">
+                  {/* Video */}
+                  {embedUrl && (
+                    <div className="rounded-xl overflow-hidden">
+                      <div className="aspect-video">
+                        <iframe
+                          src={embedUrl}
+                          title={`Sessão ${sessao.session_number} - ${sessao.tema}`}
+                          className="w-full h-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Video Link (if no embed) */}
+                  {sessao.video_url && !embedUrl && (
+                    <a
+                      href={sessao.video_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center space-x-3 p-4 bg-[#0B1120]/50 rounded-xl border border-slate-700 hover:border-[#DAA520]/30 transition-colors"
+                    >
+                      <Play className="w-5 h-5 text-[#DAA520]" />
+                      <div className="flex-1">
+                        <p className="text-sm text-slate-400">Vídeo da Sessão</p>
+                        <span className="text-[#DAA520] text-sm">Assistir vídeo</span>
+                      </div>
+                      <ExternalLink className="w-4 h-4 text-slate-400" />
+                    </a>
+                  )}
+
+                  {/* Audio */}
+                  {sessao.audio_url && (
+                    <a
+                      href={sessao.audio_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center space-x-3 p-4 bg-[#0B1120]/50 rounded-xl border border-slate-700 hover:border-[#DAA520]/30 transition-colors"
+                    >
+                      <Music className="w-5 h-5 text-[#DAA520]" />
+                      <div className="flex-1">
+                        <p className="text-sm text-slate-400">Áudio da Sessão</p>
+                        <span className="text-[#DAA520] text-sm">Ouvir áudio</span>
+                      </div>
+                      <ExternalLink className="w-4 h-4 text-slate-400" />
+                    </a>
+                  )}
+
+                  {/* Google Drive Link */}
+                  {sessao.drive_link && (
+                    <a
+                      href={sessao.drive_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center space-x-3 p-4 bg-[#0B1120]/50 rounded-xl border border-slate-700 hover:border-[#DAA520]/30 transition-colors"
+                    >
+                      <FolderOpen className="w-5 h-5 text-[#DAA520]" />
+                      <div className="flex-1">
+                        <p className="text-sm text-slate-400">Materiais da Sessão</p>
+                        <span className="text-[#DAA520] text-sm">Abrir Google Drive</span>
+                      </div>
+                      <ExternalLink className="w-4 h-4 text-slate-400" />
+                    </a>
+                  )}
+
+                  {/* Resumo */}
+                  {sessao.resumo && (
+                    <div className="p-4 bg-[#0B1120]/50 rounded-xl border border-slate-700">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <FileText className="w-5 h-5 text-[#DAA520]" />
                     <h4 className="text-lg font-heading font-medium text-slate-200">Resumo da Sessão</h4>
                   </div>
                   <p className="text-slate-300 leading-relaxed whitespace-pre-wrap" data-testid={`sessao-resumo-${index}`}>
