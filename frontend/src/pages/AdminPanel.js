@@ -698,6 +698,15 @@ const AdminPanel = ({ user }) => {
                       />
                     </div>
                   )}
+                  <div>
+                    <Label className="text-slate-300">Link da Página de Vendas</Label>
+                    <Input
+                      value={editMentoriaData.sales_link}
+                      onChange={(e) => setEditMentoriaData({ ...editMentoriaData, sales_link: e.target.value })}
+                      placeholder="https://exemplo.com/pagina-de-vendas"
+                      className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                    />
+                  </div>
                   <Button
                     onClick={updateMentoria}
                     className="w-full bg-[#DAA520] text-[#0B1120] hover:bg-[#B8860B]"
