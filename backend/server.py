@@ -54,6 +54,12 @@ class UserBase(BaseModel):
     email: EmailStr
     name: str
     role: str = "mentorada"  # mentorada or admin
+    phone: Optional[str] = None
+    country: Optional[str] = None
+    country_code: Optional[str] = None  # Ex: BR, JP, US
+    address: Optional[str] = None
+    profile_image_url: Optional[str] = None
+    currency: Optional[str] = "BRL"  # BRL, USD, EUR, JPY
 
 class UserCreate(UserBase):
     password: str
