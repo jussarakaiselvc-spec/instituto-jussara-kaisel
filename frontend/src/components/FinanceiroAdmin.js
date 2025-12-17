@@ -141,12 +141,17 @@ const FinanceiroAdmin = () => {
 
   const updateFinanceiro = async () => {
     try {
-      await axios.put(`${API}/financeiro/${editingFinanceiro.financeiro_id}`, {
+      const payload = {
         valor_total: parseFloat(editData.valor_total),
         forma_pagamento: editData.forma_pagamento,
         numero_parcelas: parseInt(editData.numero_parcelas),
+        currency: editData.currency,
         observacoes: editData.observacoes,
-      });
+      };
+      if (editData.data_pagamento) {
+        payload.data_pagamento = new Date(editData.data_pagamento).toISOString();
+      }
+      await axios.put(`${API}/financeiro/${editingFinanceiro.financeiro_id}`, payload);
       toast.success('Registro financeiro atualizado!');
       setEditingFinanceiro(null);
       fetchFinanceiros();
