@@ -172,7 +172,8 @@ const AdminPanel = ({ user }) => {
     setEditMentoriaData({ 
       name: mentoria.name, 
       description: mentoria.description || '',
-      cover_image_url: mentoria.cover_image_url || ''
+      cover_image_url: mentoria.cover_image_url || '',
+      sales_link: mentoria.sales_link || ''
     });
   };
 
