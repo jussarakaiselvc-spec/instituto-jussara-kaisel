@@ -593,6 +593,68 @@ const FinanceiroAdmin = () => {
 
                   {isExpanded && financeiro.parcelas && (
                     <div className="mt-4 space-y-2 border-t border-slate-700 pt-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-sm text-slate-400">Gerenciar Parcelas</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setAddingParcela(financeiro.financeiro_id);
+                            setNewParcela({ valor: '', data_vencimento: '' });
+                          }}
+                          className="text-[#DAA520] hover:text-[#B8860B] hover:bg-[#DAA520]/10"
+                        >
+                          <Plus className="w-4 h-4 mr-1" />
+                          Adicionar
+                        </Button>
+                      </div>
+                      
+                      {/* Add Parcela Form */}
+                      {addingParcela === financeiro.financeiro_id && (
+                        <div className="p-4 bg-[#0B1120] rounded-lg border border-[#DAA520]/30 mb-3">
+                          <p className="text-sm font-medium text-[#DAA520] mb-3">Nova Parcela</p>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <Label className="text-xs text-slate-400">Valor (R$)</Label>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                value={newParcela.valor}
+                                onChange={(e) => setNewParcela({ ...newParcela, valor: e.target.value })}
+                                placeholder="0.00"
+                                className="bg-[#111827] border-slate-700 text-slate-200 h-9"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-xs text-slate-400">Vencimento</Label>
+                              <Input
+                                type="date"
+                                value={newParcela.data_vencimento}
+                                onChange={(e) => setNewParcela({ ...newParcela, data_vencimento: e.target.value })}
+                                className="bg-[#111827] border-slate-700 text-slate-200 h-9"
+                              />
+                            </div>
+                          </div>
+                          <div className="flex justify-end gap-2 mt-3">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setAddingParcela(null)}
+                              className="text-slate-400 hover:text-slate-200"
+                            >
+                              Cancelar
+                            </Button>
+                            <Button
+                              size="sm"
+                              onClick={() => addNewParcela(financeiro.financeiro_id)}
+                              className="bg-[#DAA520] text-[#0B1120] hover:bg-[#B8860B]"
+                            >
+                              Salvar
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+
                       {financeiro.parcelas.map((parcela, pIndex) => (
                         <div
                           key={parcela.parcela_id}
@@ -616,22 +678,49 @@ const FinanceiroAdmin = () => {
                               </p>
                               <p className="text-xs text-slate-500">
                                 Vence: {new Date(parcela.data_vencimento).toLocaleDateString('pt-BR')}
+                                {parcela.data_pagamento && (
+                                  <span className="text-green-400 ml-2">
+                                    • Pago em: {new Date(parcela.data_pagamento).toLocaleDateString('pt-BR')}
+                                  </span>
+                                )}
                               </p>
                             </div>
                           </div>
-                          <div className="text-right">
-                            <p className="text-sm font-medium text-slate-200">
-                              R$ {parcela.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                            </p>
-                            <span
-                              className={`text-xs px-2 py-1 rounded-full ${
-                                parcela.status === 'paga'
-                                  ? 'bg-green-500/10 text-green-400'
-                                  : 'bg-yellow-500/10 text-yellow-400'
-                              }`}
-                            >
-                              {parcela.status === 'paga' ? 'Paga' : 'Pendente'}
-                            </span>
+                          <div className="flex items-center space-x-3">
+                            <div className="text-right">
+                              <p className="text-sm font-medium text-slate-200">
+                                R$ {parcela.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                              </p>
+                              <span
+                                className={`text-xs px-2 py-1 rounded-full ${
+                                  parcela.status === 'paga'
+                                    ? 'bg-green-500/10 text-green-400'
+                                    : 'bg-yellow-500/10 text-yellow-400'
+                                }`}
+                              >
+                                {parcela.status === 'paga' ? 'Paga' : 'Pendente'}
+                              </span>
+                            </div>
+                            <div className="flex items-center space-x-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => openEditParcela(parcela)}
+                                className="text-slate-400 hover:text-[#DAA520] hover:bg-[#DAA520]/10 h-8 w-8 p-0"
+                                title="Editar parcela"
+                              >
+                                <Pencil className="w-3 h-3" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => deleteParcela(parcela.parcela_id)}
+                                className="text-slate-400 hover:text-red-400 hover:bg-red-500/10 h-8 w-8 p-0"
+                                title="Excluir parcela"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       ))}
