@@ -571,6 +571,17 @@ const AdminPanel = ({ user }) => {
                         />
                       </div>
                     )}
+                    <div>
+                      <Label className="text-slate-300">Link da Página de Vendas</Label>
+                      <Input
+                        value={newMentoria.sales_link}
+                        onChange={(e) => setNewMentoria({ ...newMentoria, sales_link: e.target.value })}
+                        data-testid="mentoria-sales-link-input"
+                        placeholder="https://exemplo.com/pagina-de-vendas"
+                        className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                      />
+                      <p className="text-xs text-slate-500 mt-1">Link para página de vendas com pagamento</p>
+                    </div>
                     <Button
                       onClick={createMentoria}
                       disabled={creatingMentoria}
