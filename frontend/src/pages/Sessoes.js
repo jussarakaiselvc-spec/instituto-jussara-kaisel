@@ -17,15 +17,30 @@ const Sessoes = ({ user }) => {
 
   const fetchData = async () => {
     try {
-      // Get active mentoria
+      // Get all mentorias
       const mentoriasResponse = await axios.get(`${API}/mentorada-mentorias/my`);
-      const active = mentoriasResponse.data.find(m => m.status === 'ativa') || mentoriasResponse.data[0];
+      const mentorias = mentoriasResponse.data;
       
-      if (active) {
+      if (mentorias.length > 0) {
+        // Set active mentoria
+        const active = mentorias.find(m => m.status === 'ativa') || mentorias[0];
         setActiveMentoria(active);
-        // Get sessoes
-        const sessoesResponse = await axios.get(`${API}/sessoes/mentoria/${active.mentorada_mentoria_id}`);
-        setSessoes(sessoesResponse.data);
+        
+        // Get sessoes from ALL mentorias
+        let allSessoes = [];
+        for (const mentoria of mentorias) {
+          try {
+            const sessoesResponse = await axios.get(`${API}/sessoes/mentoria/${mentoria.mentorada_mentoria_id}`);
+            allSessoes = [...allSessoes, ...sessoesResponse.data];
+          } catch (error) {
+            // This mentoria has no sessions, continue
+            continue;
+          }
+        }
+        
+        // Sort by date
+        allSessoes.sort((a, b) => new Date(a.session_date) - new Date(b.session_date));
+        setSessoes(allSessoes);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
