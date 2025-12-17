@@ -768,6 +768,17 @@ const AdminPanel = ({ user }) => {
                 />
               </div>
               <div>
+                <Label className="text-slate-300">Link do Drive (Materiais)</Label>
+                <Input
+                  value={newSessao.drive_url}
+                  onChange={(e) => setNewSessao({ ...newSessao, drive_url: e.target.value })}
+                  data-testid="sessao-drive-input"
+                  placeholder="https://drive.google.com/..."
+                  className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                />
+                <p className="text-xs text-slate-500 mt-1">PDFs, vídeos, planilhas e outros materiais</p>
+              </div>
+              <div>
                 <Label className="text-slate-300">Resumo</Label>
                 <Textarea
                   value={newSessao.resumo}
