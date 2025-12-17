@@ -210,11 +210,20 @@ const Sessoes = ({ user }) => {
                     <div className="p-4 bg-[#0B1120]/50 rounded-xl border border-slate-700">
                       <div className="flex items-center space-x-2 mb-3">
                         <FileText className="w-5 h-5 text-[#DAA520]" />
-                    <h4 className="text-lg font-heading font-medium text-slate-200">Resumo da Sessão</h4>
-                  </div>
-                  <p className="text-slate-300 leading-relaxed whitespace-pre-wrap" data-testid={`sessao-resumo-${index}`}>
-                    {sessao.resumo}
-                  </p>
+                        <h4 className="text-lg font-heading font-medium text-slate-200">Resumo da Sessão</h4>
+                      </div>
+                      <p className="text-slate-300 leading-relaxed whitespace-pre-wrap" data-testid={`sessao-resumo-${index}`}>
+                        {sessao.resumo}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* No content message */}
+                  {!hasContent && (
+                    <p className="text-slate-500 text-center py-4">
+                      Nenhum material disponível para esta sessão ainda.
+                    </p>
+                  )}
                 </div>
               )}
             </div>
