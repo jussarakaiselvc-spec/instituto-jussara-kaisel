@@ -234,6 +234,16 @@ class UpdatePasswordRequest(BaseModel):
     current_password: str
     new_password: str
 
+class UpdateProfileRequest(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = None
+    country: Optional[str] = None
+    country_code: Optional[str] = None
+    address: Optional[str] = None
+    profile_image_url: Optional[str] = None
+    currency: Optional[str] = None
+
 # ============ UPLOAD ROUTES ============
 
 ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.webp'}
