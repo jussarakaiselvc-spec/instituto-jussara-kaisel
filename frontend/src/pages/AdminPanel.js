@@ -216,6 +216,7 @@ const AdminPanel = ({ user }) => {
     session_date: new Date().toISOString().split('T')[0],
     video_url: '',
     audio_url: '',
+    drive_url: '',
     resumo: '',
   });
   const [creatingSessao, setCreatingSessao] = useState(false);
@@ -236,6 +237,7 @@ const AdminPanel = ({ user }) => {
         session_date: new Date().toISOString().split('T')[0],
         video_url: '',
         audio_url: '',
+        drive_url: '',
         resumo: '',
       });
     } catch (error) {
