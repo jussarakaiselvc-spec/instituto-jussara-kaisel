@@ -610,20 +610,10 @@ const AdminPanel = ({ user }) => {
                     </div>
                   )}
                   <div className="p-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-3">
                       <div className="flex-1">
                         <p className="text-slate-200 font-medium text-lg">{m.name}</p>
                         {m.description && <p className="text-sm text-slate-400 mt-1 line-clamp-2">{m.description}</p>}
-                        {m.sales_link && (
-                          <a 
-                            href={m.sales_link} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-xs text-[#DAA520] hover:underline mt-2 inline-block"
-                          >
-                            🔗 Ver página de vendas
-                          </a>
-                        )}
                       </div>
                       <div className="flex items-center space-x-1 ml-2">
                         <Button
@@ -645,10 +635,175 @@ const AdminPanel = ({ user }) => {
                         </Button>
                       </div>
                     </div>
+                    {/* Mentoradas count and view */}
+                    <div className="flex items-center justify-between pt-3 border-t border-slate-700">
+                      <div className="flex items-center gap-2 text-sm text-slate-400">
+                        <Users className="w-4 h-4" />
+                        <span>{mentoradaMentorias.filter(mm => mm.mentoria_id === m.mentoria_id).length} alunas</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {m.sales_link && (
+                          <a 
+                            href={m.sales_link} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-xs text-[#DAA520] hover:underline flex items-center gap-1"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                            Vendas
+                          </a>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSelectedMentoria(m)}
+                          className="text-[#DAA520] hover:bg-[#DAA520]/10"
+                        >
+                          <Eye className="w-4 h-4 mr-1" />
+                          Ver Alunas
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
+
+            {/* Dialog para ver alunas da mentoria */}
+            <Dialog open={!!selectedMentoria} onOpenChange={(open) => !open && setSelectedMentoria(null)}>
+              <DialogContent className="bg-[#111827] border-white/10 max-w-2xl max-h-[80vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle className="text-[#DAA520] font-heading flex items-center gap-2">
+                    <BookOpen className="w-5 h-5" />
+                    {selectedMentoria?.name} - Alunas
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  {mentoradaMentorias
+                    .filter(mm => mm.mentoria_id === selectedMentoria?.mentoria_id)
+                    .map((mm) => {
+                      const mentorada = users.find(u => u.user_id === mm.user_id);
+                      const mentoradaSessoes = sessoes.filter(s => s.mentorada_mentoria_id === mm.mentorada_mentoria_id);
+                      return (
+                        <div key={mm.mentorada_mentoria_id} className="p-4 bg-[#0B1120]/50 rounded-xl border border-slate-700">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-full bg-[#DAA520]/20 flex items-center justify-center">
+                                <Users className="w-5 h-5 text-[#DAA520]" />
+                              </div>
+                              <div>
+                                <p className="text-slate-200 font-medium">{mentorada?.name || 'N/A'}</p>
+                                <p className="text-xs text-slate-400">{mentorada?.email}</p>
+                              </div>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setSelectedMentoria(null);
+                                setSelectedMentorada({ ...mm, mentorada });
+                              }}
+                              className="text-[#DAA520] hover:bg-[#DAA520]/10"
+                            >
+                              <Eye className="w-4 h-4 mr-1" />
+                              Ver Sessões
+                            </Button>
+                          </div>
+                          <div className="flex items-center gap-4 text-sm text-slate-400">
+                            <span className="flex items-center gap-1">
+                              <Video className="w-4 h-4" />
+                              {mentoradaSessoes.length} sessões
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Calendar className="w-4 h-4" />
+                              Início: {new Date(mm.start_date).toLocaleDateString('pt-BR')}
+                            </span>
+                            <span className={`px-2 py-1 rounded-full text-xs ${mm.status === 'ativa' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                              {mm.status}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  {mentoradaMentorias.filter(mm => mm.mentoria_id === selectedMentoria?.mentoria_id).length === 0 && (
+                    <p className="text-center text-slate-400 py-8">Nenhuma aluna vinculada a esta mentoria ainda.</p>
+                  )}
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            {/* Dialog para ver sessões da mentorada */}
+            <Dialog open={!!selectedMentorada} onOpenChange={(open) => !open && setSelectedMentorada(null)}>
+              <DialogContent className="bg-[#111827] border-white/10 max-w-3xl max-h-[80vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle className="text-[#DAA520] font-heading flex items-center gap-2">
+                    <Video className="w-5 h-5" />
+                    Sessões - {selectedMentorada?.mentorada?.name}
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  {sessoes
+                    .filter(s => s.mentorada_mentoria_id === selectedMentorada?.mentorada_mentoria_id)
+                    .sort((a, b) => a.session_number - b.session_number)
+                    .map((sessao) => (
+                      <div key={sessao.sessao_id} className="p-4 bg-[#0B1120]/50 rounded-xl border border-slate-700">
+                        <div className="flex items-start justify-between mb-3">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="w-8 h-8 rounded-full bg-[#DAA520]/20 flex items-center justify-center text-[#DAA520] font-bold text-sm">
+                                {sessao.session_number}
+                              </span>
+                              <p className="text-slate-200 font-medium">{sessao.tema || 'Sem tema'}</p>
+                            </div>
+                            <p className="text-xs text-slate-400 mt-1 ml-10">
+                              {new Date(sessao.session_date).toLocaleDateString('pt-BR', { 
+                                weekday: 'long', 
+                                day: 'numeric', 
+                                month: 'long', 
+                                year: 'numeric' 
+                              })}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        {sessao.resumo && (
+                          <div className="mb-3 p-3 bg-[#111827] rounded-lg">
+                            <p className="text-xs text-slate-500 mb-1">Resumo:</p>
+                            <p className="text-sm text-slate-300">{sessao.resumo}</p>
+                          </div>
+                        )}
+                        
+                        <div className="flex flex-wrap gap-2">
+                          {sessao.video_url && (
+                            <a href={sessao.video_url} target="_blank" rel="noopener noreferrer" 
+                               className="flex items-center gap-1 px-3 py-1.5 bg-red-500/10 text-red-400 rounded-lg text-xs hover:bg-red-500/20 transition-colors">
+                              <Video className="w-3 h-3" />
+                              YouTube
+                            </a>
+                          )}
+                          {sessao.audio_url && (
+                            <a href={sessao.audio_url} target="_blank" rel="noopener noreferrer"
+                               className="flex items-center gap-1 px-3 py-1.5 bg-green-500/10 text-green-400 rounded-lg text-xs hover:bg-green-500/20 transition-colors">
+                              <FileText className="w-3 h-3" />
+                              Spotify
+                            </a>
+                          )}
+                          {sessao.drive_url && (
+                            <a href={sessao.drive_url} target="_blank" rel="noopener noreferrer"
+                               className="flex items-center gap-1 px-3 py-1.5 bg-blue-500/10 text-blue-400 rounded-lg text-xs hover:bg-blue-500/20 transition-colors">
+                              <FileText className="w-3 h-3" />
+                              Materiais (Drive)
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  {sessoes.filter(s => s.mentorada_mentoria_id === selectedMentorada?.mentorada_mentoria_id).length === 0 && (
+                    <p className="text-center text-slate-400 py-8">Nenhuma sessão registrada ainda.</p>
+                  )}
+                </div>
+              </DialogContent>
+            </Dialog>
 
             {/* Edit Mentoria Dialog */}
             <Dialog open={!!editingMentoria} onOpenChange={(open) => !open && setEditingMentoria(null)}>
