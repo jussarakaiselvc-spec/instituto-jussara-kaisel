@@ -733,6 +733,81 @@ const FinanceiroAdmin = () => {
         </>
       )}
 
+      {/* Edit Parcela Dialog */}
+      <Dialog open={!!editingParcela} onOpenChange={(open) => !open && setEditingParcela(null)}>
+        <DialogContent className="bg-[#111827] border-white/10 max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-[#DAA520] font-heading">
+              Editar Parcela {editingParcela?.numero_parcela}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label className="text-slate-300">Valor (R$)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={parcelaEditData.valor}
+                onChange={(e) => setParcelaEditData({ ...parcelaEditData, valor: e.target.value })}
+                className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+              />
+            </div>
+            <div>
+              <Label className="text-slate-300">Data de Vencimento</Label>
+              <Input
+                type="date"
+                value={parcelaEditData.data_vencimento}
+                onChange={(e) => setParcelaEditData({ ...parcelaEditData, data_vencimento: e.target.value })}
+                className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+              />
+            </div>
+            <div>
+              <Label className="text-slate-300">Status</Label>
+              <Select 
+                value={parcelaEditData.status} 
+                onValueChange={(v) => setParcelaEditData({ ...parcelaEditData, status: v })}
+              >
+                <SelectTrigger className="bg-[#0B1120]/50 border-slate-700 text-slate-200">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-[#111827] border-white/10">
+                  <SelectItem value="pendente">
+                    <div className="flex items-center space-x-2">
+                      <AlertCircle className="w-4 h-4 text-yellow-400" />
+                      <span>Pendente</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="paga">
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="w-4 h-4 text-green-400" />
+                      <span>Paga</span>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {parcelaEditData.status === 'paga' && (
+              <div>
+                <Label className="text-slate-300">Data do Pagamento</Label>
+                <Input
+                  type="date"
+                  value={parcelaEditData.data_pagamento}
+                  onChange={(e) => setParcelaEditData({ ...parcelaEditData, data_pagamento: e.target.value })}
+                  className="bg-[#0B1120]/50 border-slate-700 text-slate-200"
+                />
+              </div>
+            )}
+            <Button
+              onClick={saveParcela}
+              className="w-full bg-[#DAA520] text-[#0B1120] hover:bg-[#B8860B]"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              Salvar Alterações
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Edit Dialog */}
       <Dialog open={!!editingFinanceiro} onOpenChange={(open) => !open && setEditingFinanceiro(null)}>
         <DialogContent className="bg-[#111827] border-white/10 max-w-md">
