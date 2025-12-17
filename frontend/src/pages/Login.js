@@ -36,7 +36,7 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B1120] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#0B1120] flex items-center justify-center p-3 sm:p-4">
       <div className="absolute inset-0 opacity-5">
         <img
           src="https://images.unsplash.com/photo-1618631179029-dfaeb4b786de?crop=entropy&cs=srgb&fm=jpg&q=85"
@@ -46,19 +46,19 @@ const Login = ({ onLogin }) => {
       </div>
 
       <div className="relative z-10 w-full max-w-md">
-        <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8 shadow-2xl">
-          <div className="flex justify-center mb-8">
+        <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-8 shadow-2xl">
+          <div className="flex justify-center mb-6 sm:mb-8">
             <img
               src="https://customer-assets.emergentagent.com/job_portal-jussara/artifacts/ydejbjhx_LOGO%20%20KUNDALINI%20.INSTITUCIONAL%20E%20MINHA.png"
               alt="Instituto Jussara Kaisel"
-              className="w-48 h-auto"
+              className="w-36 sm:w-48 h-auto"
             />
           </div>
 
-          <h1 className="text-3xl font-heading font-semibold text-center text-[#DAA520] mb-2">
+          <h1 className="text-2xl sm:text-3xl font-heading font-semibold text-center text-[#DAA520] mb-2">
             Portal do Instituto
           </h1>
-          <p className="text-center text-slate-400 mb-8">
+          <p className="text-center text-slate-400 mb-6 sm:mb-8 text-sm sm:text-base">
             Bem-vinda de volta
           </p>
 
