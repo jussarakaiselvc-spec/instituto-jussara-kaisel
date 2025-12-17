@@ -657,6 +657,7 @@ def main():
             # Test dynamic parcela features
             tester.test_get_parcelas()
             tester.test_add_new_parcela()
+            tester.test_add_new_parcela()  # Add second parcela for status testing
             tester.test_edit_parcela()
             tester.test_mark_parcela_status()
             tester.test_delete_parcela()
