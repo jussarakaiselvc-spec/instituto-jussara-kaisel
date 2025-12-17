@@ -122,4 +122,4 @@ test_plan:
 
 agent_communication:
   - agent: "main"
-    message: "Corrigido bug no endpoint /api/mentorada-mentorias/all (estava sendo capturado pela rota com parâmetro). Adicionados campos sales_link em Mentorias e cover_image_url/price em Produtos. Teste completo necessário. Credenciais: jussarakaiselvc@gmail.com / jussara123"
+    message: "Implementado sistema de parcelas dinâmicas no financeiro. Novas funcionalidades: PATCH /api/parcelas/{id} para edição parcial, DELETE /api/parcelas/{id} para exclusão, POST /api/parcelas/add para adicionar novas parcelas. Frontend atualizado com UI para adicionar/editar/excluir parcelas individuais. Dashboard da mentorada mostra agenda de sessões. Credenciais: admin=jussarakaiselvc@gmail.com/jussara123, mentorada=karina_kiriki@icloud.com/mentorada123"
