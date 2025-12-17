@@ -48,6 +48,7 @@ const MinhaMentoria = ({ user }) => {
   };
 
   const [mentoriaDetails, setMentoriaDetails] = useState(null);
+  const [allMentorias, setAllMentorias] = useState([]);
 
   const fetchMentoriaDetails = async (mentoriaId) => {
     try {
@@ -57,6 +58,19 @@ const MinhaMentoria = ({ user }) => {
       console.error('Error fetching mentoria details:', error);
     }
   };
+
+  useEffect(() => {
+    // Fetch all available mentorias
+    const fetchAllMentorias = async () => {
+      try {
+        const response = await axios.get(`${API}/mentorias`);
+        setAllMentorias(response.data);
+      } catch (error) {
+        console.error('Error fetching all mentorias:', error);
+      }
+    };
+    fetchAllMentorias();
+  }, []);
 
   const handleSave = async () => {
     if (!selectedMentoria) return;
