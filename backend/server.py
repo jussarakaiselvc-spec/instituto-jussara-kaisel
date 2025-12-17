@@ -65,6 +65,7 @@ class MentoriaBase(BaseModel):
     name: str
     description: Optional[str] = None
     cover_image_url: Optional[str] = None
+    sales_link: Optional[str] = None
 
 class MentoriaCreate(MentoriaBase):
     pass
