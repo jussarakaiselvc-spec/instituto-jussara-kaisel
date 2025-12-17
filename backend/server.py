@@ -606,6 +606,12 @@ async def create_sessao(sessao: SessaoCreate, admin: dict = Depends(get_admin_us
     await db.sessoes.insert_one(doc)
     return Sessao(**doc)
 
+@api_router.get("/sessoes", response_model=List[Sessao])
+async def list_all_sessoes(admin: dict = Depends(get_admin_user)):
+    """List all sessions (admin only)"""
+    sessoes = await db.sessoes.find({}, {'_id': 0}).sort('session_date', -1).to_list(1000)
+    return [Sessao(**s) for s in sessoes]
+
 @api_router.get("/sessoes/mentoria/{mentorada_mentoria_id}", response_model=List[Sessao])
 async def get_sessoes_by_mentoria(mentorada_mentoria_id: str, current_user: dict = Depends(get_current_user)):
     # Verify access
