@@ -230,6 +230,109 @@ const MinhaMentoria = ({ user }) => {
             </Button>
           </div>
         </div>
+
+        {/* Outras Mentorias Disponíveis */}
+        {allMentorias.length > 1 && (
+          <div className="mt-12">
+            <h2 className="text-2xl font-heading font-medium text-slate-200 mb-6">
+              Outras Mentorias Disponíveis
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {allMentorias.map((mentoria) => {
+                const isUnlocked = mentorias.some(m => m.mentoria_id === mentoria.mentoria_id);
+                const isCurrent = mentoriaDetails?.mentoria_id === mentoria.mentoria_id;
+                
+                if (isCurrent) return null; // Skip current mentoria
+                
+                return (
+                  <div
+                    key={mentoria.mentoria_id}
+                    className={`relative overflow-hidden rounded-2xl border shadow-xl transition-all duration-300 ${
+                      isUnlocked 
+                        ? 'bg-[#111827]/80 border-[#DAA520]/30 hover:border-[#DAA520]/50' 
+                        : 'bg-[#111827]/50 border-white/5 opacity-75'
+                    }`}
+                  >
+                    {/* Cover Image */}
+                    {mentoria.cover_image_url ? (
+                      <div className="h-32 overflow-hidden">
+                        <img
+                          src={mentoria.cover_image_url.startsWith('/uploads') 
+                            ? `${BACKEND_URL}/api${mentoria.cover_image_url}` 
+                            : mentoria.cover_image_url}
+                          alt={mentoria.name}
+                          className={`w-full h-full object-cover ${!isUnlocked ? 'filter blur-sm' : ''}`}
+                        />
+                      </div>
+                    ) : (
+                      <div className="h-32 bg-gradient-to-br from-[#DAA520]/20 to-[#0B1120] flex items-center justify-center">
+                        <Activity className="w-12 h-12 text-[#DAA520]/40" />
+                      </div>
+                    )}
+                    
+                    {/* Lock Overlay */}
+                    {!isUnlocked && (
+                      <div className="absolute top-2 right-2">
+                        <div className="w-10 h-10 rounded-full bg-slate-800/80 flex items-center justify-center border border-slate-600">
+                          <Lock className="w-5 h-5 text-slate-400" />
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Unlocked Badge */}
+                    {isUnlocked && (
+                      <div className="absolute top-2 right-2">
+                        <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center border border-green-500/50">
+                          <Unlock className="w-5 h-5 text-green-400" />
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Content */}
+                    <div className="p-4">
+                      <h3 className={`font-heading text-lg font-medium mb-2 ${
+                        isUnlocked ? 'text-[#DAA520]' : 'text-slate-400'
+                      }`}>
+                        {mentoria.name}
+                      </h3>
+                      
+                      {mentoria.description && (
+                        <p className="text-sm text-slate-400 line-clamp-2 mb-3">
+                          {mentoria.description}
+                        </p>
+                      )}
+                      
+                      {isUnlocked ? (
+                        <span className="inline-flex items-center text-xs text-green-400">
+                          <Unlock className="w-3 h-3 mr-1" />
+                          Liberada
+                        </span>
+                      ) : (
+                        <div className="space-y-2">
+                          <span className="inline-flex items-center text-xs text-slate-500">
+                            <Lock className="w-3 h-3 mr-1" />
+                            Entre em contato para liberar
+                          </span>
+                          {mentoria.sales_link && (
+                            <a
+                              href={mentoria.sales_link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center text-xs text-[#DAA520] hover:underline"
+                            >
+                              <ExternalLink className="w-3 h-3 mr-1" />
+                              Saiba mais
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
