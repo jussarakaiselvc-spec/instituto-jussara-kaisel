@@ -504,14 +504,13 @@ class InstitutoJussaraKaiselAPITester:
             print("❌ Failed to create test session")
             return False
             
-        # Now test the mentorada sessions endpoint
-        # First login as the test user to get their token
+        # Now test the mentorada sessions endpoint using existing mentorada credentials
         success, login_response = self.run_test(
-            "Login Test User for Sessions",
+            "Login Mentorada for Sessions",
             "POST",
             "auth/login",
             200,
-            data={"email": f"testuser{datetime.now().strftime('%H%M%S')}@test.com", "password": "testpass123"}
+            data={"email": "karina_kiriki@icloud.com", "password": "mentorada123"}
         )
         
         if success and 'token' in login_response:
