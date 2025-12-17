@@ -48,6 +48,8 @@ const FinanceiroAdmin = () => {
     valor_total: '',
     forma_pagamento: '',
     numero_parcelas: 1,
+    currency: 'BRL',
+    data_pagamento: '',
     observacoes: '',
   });
   const [creating, setCreating] = useState(false);
@@ -58,6 +60,8 @@ const FinanceiroAdmin = () => {
     valor_total: '',
     forma_pagamento: '',
     numero_parcelas: 1,
+    currency: 'BRL',
+    data_pagamento: '',
     observacoes: '',
   });
 
