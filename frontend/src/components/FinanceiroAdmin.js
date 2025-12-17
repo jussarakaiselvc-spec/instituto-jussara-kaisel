@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { DollarSign, TrendingUp, AlertCircle, CheckCircle, User, Plus, Pencil, Trash2, CreditCard, Building, Smartphone, Handshake, X } from 'lucide-react';
+import { DollarSign, TrendingUp, AlertCircle, CheckCircle, User, Plus, Pencil, Trash2, CreditCard, Building, Smartphone, Handshake, X, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { CURRENCIES, getCurrencyByCode } from '@/utils/countries';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
