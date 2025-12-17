@@ -326,6 +326,246 @@ class InstitutoJussaraKaiselAPITester:
         
         return all_passed
 
+    def test_get_parcelas(self):
+        """Test GET /api/parcelas/financeiro/{financeiro_id} - Get installments"""
+        print("\n=== TESTING GET PARCELAS ===")
+        if not self.created_financeiro_id:
+            print("❌ No financeiro available for parcelas test")
+            return False
+            
+        success, response = self.run_test(
+            "Get Parcelas by Financeiro",
+            "GET",
+            f"parcelas/financeiro/{self.created_financeiro_id}",
+            200,
+            token=self.admin_token
+        )
+        
+        if success and isinstance(response, list):
+            print(f"✅ Retrieved {len(response)} parcelas")
+            # Store parcela IDs for further testing
+            self.created_parcela_ids = [p['parcela_id'] for p in response if 'parcela_id' in p]
+            return True
+        return False
+
+    def test_add_new_parcela(self):
+        """Test POST /api/parcelas/add - Add new installment (dynamic feature)"""
+        print("\n=== TESTING ADD NEW PARCELA (DYNAMIC FEATURE) ===")
+        if not self.created_financeiro_id:
+            print("❌ No financeiro available for adding parcela")
+            return False
+            
+        new_parcela_data = {
+            "financeiro_id": self.created_financeiro_id,
+            "valor": 250.00,
+            "data_vencimento": "2024-12-31T00:00:00Z"
+        }
+        
+        success, response = self.run_test(
+            "Add New Parcela (POST /api/parcelas/add)",
+            "POST",
+            "parcelas/add",
+            200,
+            data=new_parcela_data,
+            token=self.admin_token
+        )
+        
+        if success and 'parcela_id' in response:
+            new_parcela_id = response['parcela_id']
+            self.created_parcela_ids.append(new_parcela_id)
+            print(f"✅ New parcela added with ID: {new_parcela_id}")
+            return True
+        return False
+
+    def test_edit_parcela(self):
+        """Test PATCH /api/parcelas/{parcela_id} - Edit installment (dynamic feature)"""
+        print("\n=== TESTING EDIT PARCELA (DYNAMIC FEATURE) ===")
+        if not self.created_parcela_ids:
+            print("❌ No parcelas available for editing")
+            return False
+            
+        parcela_id = self.created_parcela_ids[0]
+        edit_data = {
+            "valor": 300.00,
+            "status": "paga",
+            "data_pagamento": datetime.now().isoformat()
+        }
+        
+        success, response = self.run_test(
+            "Edit Parcela (PATCH /api/parcelas/{parcela_id})",
+            "PATCH",
+            f"parcelas/{parcela_id}",
+            200,
+            data=edit_data,
+            token=self.admin_token
+        )
+        
+        if success:
+            print(f"✅ Parcela edited successfully")
+            return True
+        return False
+
+    def test_mark_parcela_status(self):
+        """Test marking parcela as paid/pending with one click"""
+        print("\n=== TESTING MARK PARCELA STATUS (ONE CLICK FEATURE) ===")
+        if not self.created_parcela_ids or len(self.created_parcela_ids) < 2:
+            print("❌ Need at least 2 parcelas for status testing")
+            return False
+            
+        parcela_id = self.created_parcela_ids[1] if len(self.created_parcela_ids) > 1 else self.created_parcela_ids[0]
+        
+        # Mark as paid
+        mark_paid_data = {
+            "status": "paga",
+            "data_pagamento": datetime.now().isoformat()
+        }
+        
+        success1, response1 = self.run_test(
+            "Mark Parcela as Paid",
+            "PATCH",
+            f"parcelas/{parcela_id}",
+            200,
+            data=mark_paid_data,
+            token=self.admin_token
+        )
+        
+        # Mark as pending
+        mark_pending_data = {
+            "status": "pendente",
+            "data_pagamento": None
+        }
+        
+        success2, response2 = self.run_test(
+            "Mark Parcela as Pending",
+            "PATCH",
+            f"parcelas/{parcela_id}",
+            200,
+            data=mark_pending_data,
+            token=self.admin_token
+        )
+        
+        if success1 and success2:
+            print(f"✅ Parcela status toggle working correctly")
+            return True
+        return False
+
+    def test_delete_parcela(self):
+        """Test DELETE /api/parcelas/{parcela_id} - Delete installment (dynamic feature)"""
+        print("\n=== TESTING DELETE PARCELA (DYNAMIC FEATURE) ===")
+        if not self.created_parcela_ids:
+            print("❌ No parcelas available for deletion")
+            return False
+            
+        # Delete the last added parcela
+        parcela_id = self.created_parcela_ids[-1]
+        
+        success, response = self.run_test(
+            "Delete Parcela (DELETE /api/parcelas/{parcela_id})",
+            "DELETE",
+            f"parcelas/{parcela_id}",
+            200,
+            token=self.admin_token
+        )
+        
+        if success:
+            print(f"✅ Parcela deleted successfully")
+            self.created_parcela_ids.remove(parcela_id)
+            return True
+        return False
+
+    def test_mentorada_sessions_endpoint(self):
+        """Test GET /api/minha-mentoria/sessoes - Mentee dashboard sessions"""
+        print("\n=== TESTING MENTORADA SESSIONS ENDPOINT ===")
+        
+        # First create a session for testing
+        if not self.created_mentorada_mentoria_id:
+            print("❌ No mentorada_mentoria available for session test")
+            return False
+            
+        session_data = {
+            "mentorada_mentoria_id": self.created_mentorada_mentoria_id,
+            "session_number": 1,
+            "tema": "Test Session for Dashboard",
+            "session_date": datetime.now().isoformat()
+        }
+        
+        success, response = self.run_test(
+            "Create Test Session",
+            "POST",
+            "sessoes",
+            200,
+            data=session_data,
+            token=self.admin_token
+        )
+        
+        if not success:
+            print("❌ Failed to create test session")
+            return False
+            
+        # Now test the mentorada sessions endpoint
+        # First login as the test user to get their token
+        success, login_response = self.run_test(
+            "Login Test User for Sessions",
+            "POST",
+            "auth/login",
+            200,
+            data={"email": f"testuser{datetime.now().strftime('%H%M%S')}@test.com", "password": "testpass123"}
+        )
+        
+        if success and 'token' in login_response:
+            test_user_token = login_response['token']
+            
+            success, sessions_response = self.run_test(
+                "Get Mentorada Sessions (GET /api/minha-mentoria/sessoes)",
+                "GET",
+                "minha-mentoria/sessoes",
+                200,
+                token=test_user_token
+            )
+            
+            if success and isinstance(sessions_response, list):
+                print(f"✅ Retrieved {len(sessions_response)} sessions for mentorada dashboard")
+                return True
+        
+        return False
+
+    def test_financial_summary_calculations(self):
+        """Test financial summary with correct totals"""
+        print("\n=== TESTING FINANCIAL SUMMARY CALCULATIONS ===")
+        
+        success, response = self.run_test(
+            "Get Financial Overview for Summary",
+            "GET",
+            "admin/financeiro-overview",
+            200,
+            token=self.admin_token
+        )
+        
+        if success and isinstance(response, list):
+            total_receita = 0
+            total_recebido = 0
+            total_a_receber = 0
+            
+            for financeiro in response:
+                total_receita += financeiro.get('valor_total', 0)
+                total_recebido += financeiro.get('valor_recebido', 0)
+                total_a_receber += (financeiro.get('valor_total', 0) - financeiro.get('valor_recebido', 0))
+            
+            print(f"✅ Financial Summary Calculated:")
+            print(f"   Total Receita: R$ {total_receita:.2f}")
+            print(f"   Total Recebido: R$ {total_recebido:.2f}")
+            print(f"   Total A Receber: R$ {total_a_receber:.2f}")
+            
+            # Verify calculations are consistent
+            if abs(total_receita - (total_recebido + total_a_receber)) < 0.01:
+                print(f"✅ Financial calculations are consistent")
+                return True
+            else:
+                print(f"❌ Financial calculations inconsistent")
+                return False
+        
+        return False
+
     def test_delete_financeiro(self):
         """Test DELETE /api/financeiro/{financeiro_id} - Delete financial record"""
         print("\n=== TESTING FINANCEIRO DELETE ===")
