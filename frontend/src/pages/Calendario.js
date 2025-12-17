@@ -288,18 +288,7 @@ const Calendario = ({ user }) => {
           <CalendarIcon className="w-16 h-16 text-[#DAA520] mx-auto mb-4" />
           <p className="text-slate-300 text-lg mb-4">Nenhuma sessão agendada ainda.</p>
           {user?.role !== 'admin' && (
-            <div className="mt-6 space-y-4">
-              <p className="text-slate-400 text-sm">
-                Para agendar sua próxima sessão, entre em contato com a mentora pelo chat de mensagens.
-              </p>
-              <a 
-                href="/mensagens" 
-                className="inline-flex items-center px-6 py-3 bg-[#DAA520] text-[#0B1120] rounded-full font-medium hover:bg-[#B8860B] transition-colors"
-              >
-                <MessageCircle className="w-5 h-5 mr-2" />
-                Enviar Mensagem
-              </a>
-            </div>
+            <SchedulingLinks />
           )}
         </div>
       ) : (
