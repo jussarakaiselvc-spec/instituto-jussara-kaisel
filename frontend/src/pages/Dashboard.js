@@ -157,6 +157,67 @@ const Dashboard = ({ user }) => {
             </div>
           </div>
         </div>
+
+        {/* Minhas Sessões / Agenda */}
+        <div className="col-span-1 md:col-span-12">
+          <div className="relative overflow-hidden rounded-2xl bg-[#111827]/80 backdrop-blur-md border border-white/5 shadow-xl p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-3">
+                <Calendar className="w-6 h-6 text-[#DAA520]" />
+                <h3 className="text-xl font-heading font-medium text-slate-200">Minhas Sessões</h3>
+              </div>
+              <Button
+                onClick={() => navigate('/sessoes')}
+                variant="ghost"
+                className="text-[#DAA520] hover:bg-[#DAA520]/10"
+              >
+                Ver todas
+              </Button>
+            </div>
+            
+            {sessoes.length > 0 ? (
+              <div className="space-y-4">
+                {sessoes.slice(0, 5).map((sessao, index) => (
+                  <div key={sessao.sessao_id || index} className="flex items-start gap-4 p-4 bg-[#0B1120]/50 rounded-xl border border-slate-700/50">
+                    <div className="w-12 h-12 rounded-full bg-[#DAA520]/20 flex items-center justify-center flex-shrink-0">
+                      <span className="text-[#DAA520] font-bold">{sessao.session_number}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-slate-200 font-medium">{sessao.tema || 'Sessão ' + sessao.session_number}</p>
+                      <p className="text-sm text-slate-400 flex items-center gap-1 mt-1">
+                        <Clock className="w-3 h-3" />
+                        {new Date(sessao.session_date).toLocaleDateString('pt-BR', { 
+                          weekday: 'short', 
+                          day: 'numeric', 
+                          month: 'short',
+                          year: 'numeric'
+                        })}
+                      </p>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {sessao.video_url && (
+                          <a href={sessao.video_url} target="_blank" rel="noopener noreferrer" 
+                             className="flex items-center gap-1 px-2 py-1 bg-red-500/10 text-red-400 rounded text-xs hover:bg-red-500/20">
+                            <Video className="w-3 h-3" />
+                            Vídeo
+                          </a>
+                        )}
+                        {sessao.drive_url && (
+                          <a href={sessao.drive_url} target="_blank" rel="noopener noreferrer"
+                             className="flex items-center gap-1 px-2 py-1 bg-blue-500/10 text-blue-400 rounded text-xs hover:bg-blue-500/20">
+                            <FileText className="w-3 h-3" />
+                            Materiais
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-slate-400 py-8">Nenhuma sessão registrada ainda.</p>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
