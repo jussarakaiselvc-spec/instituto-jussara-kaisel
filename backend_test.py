@@ -66,7 +66,7 @@ class InstitutoJussaraKaiselAPITester:
             "POST",
             "auth/login",
             200,
-            data={"email": "admin@instituto.com", "password": "admin_password"}
+            data={"email": "jussarakaiselvc@gmail.com", "password": "jussara123"}
         )
         if success and 'token' in response:
             self.admin_token = response['token']
