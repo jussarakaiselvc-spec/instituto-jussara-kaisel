@@ -256,6 +256,48 @@ const AdminPanel = ({ user }) => {
     }
   };
 
+  const openEditSessao = (sessao) => {
+    setEditingSessao(sessao);
+    setEditSessaoData({
+      mentorada_mentoria_id: sessao.mentorada_mentoria_id,
+      session_number: sessao.session_number,
+      tema: sessao.tema || '',
+      session_date: sessao.session_date ? sessao.session_date.split('T')[0] : '',
+      video_url: sessao.video_url || '',
+      audio_url: sessao.audio_url || '',
+      drive_url: sessao.drive_url || '',
+      resumo: sessao.resumo || '',
+    });
+  };
+
+  const updateSessao = async () => {
+    try {
+      await axios.put(`${API}/sessoes/${editingSessao.sessao_id}`, {
+        ...editSessaoData,
+        session_date: new Date(editSessaoData.session_date).toISOString(),
+        session_number: parseInt(editSessaoData.session_number),
+      });
+      toast.success('Sessão atualizada com sucesso!');
+      setEditingSessao(null);
+      fetchAllData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erro ao atualizar sessão');
+    }
+  };
+
+  const deleteSessao = async (sessaoId) => {
+    if (!window.confirm('Tem certeza que deseja excluir esta sessão?')) {
+      return;
+    }
+    try {
+      await axios.delete(`${API}/sessoes/${sessaoId}`);
+      toast.success('Sessão excluída com sucesso!');
+      fetchAllData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erro ao excluir sessão');
+    }
+  };
+
   // Create Tarefa
   const [newTarefa, setNewTarefa] = useState({
     mentorada_mentoria_id: '',
