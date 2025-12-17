@@ -1,15 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { User, Lock, Mail, Calendar } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { User, Lock, Mail, Calendar, MapPin, Phone, Globe } from 'lucide-react';
 import { toast } from 'sonner';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import ImageUpload from '@/components/ImageUpload';
+import { COUNTRIES, CURRENCIES } from '@/utils/countries';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const Perfil = ({ user }) => {
+const Perfil = ({ user, setUser }) => {
+  const [profileData, setProfileData] = useState({
+    name: user.name || '',
+    phone: user.phone || '',
+    country: user.country || '',
+    country_code: user.country_code || 'BR',
+    address: user.address || '',
+    profile_image_url: user.profile_image_url || '',
+    currency: user.currency || 'BRL',
+  });
   const [emailData, setEmailData] = useState({
     new_email: user.email,
   });
@@ -18,8 +37,27 @@ const Perfil = ({ user }) => {
     new_password: '',
     confirm_password: '',
   });
+  const [updatingProfile, setUpdatingProfile] = useState(false);
   const [updatingEmail, setUpdatingEmail] = useState(false);
   const [updatingPassword, setUpdatingPassword] = useState(false);
+
+  const selectedCountry = COUNTRIES.find(c => c.code === profileData.country_code);
+
+  const updateProfile = async () => {
+    setUpdatingProfile(true);
+    try {
+      const response = await axios.put(`${API}/me/profile`, profileData);
+      toast.success('Perfil atualizado com sucesso!');
+      if (setUser) {
+        setUser(response.data);
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast.error(error.response?.data?.detail || 'Erro ao atualizar perfil');
+    } finally {
+      setUpdatingProfile(false);
+    }
+  };
 
   const updateEmail = async () => {
     if (!emailData.new_email) {
@@ -109,7 +147,7 @@ const Perfil = ({ user }) => {
       </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Informações do Usuário */}
+        {/* Foto de Perfil e Informações Básicas */}
         <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8">
           <div className="flex items-center space-x-2 mb-6">
             <User className="w-6 h-6 text-[#DAA520]" />
@@ -117,18 +155,33 @@ const Perfil = ({ user }) => {
           </div>
 
           <div className="space-y-6">
-            <div>
-              <Label className="text-slate-300 mb-2 block">Nome</Label>
-              <div className="bg-[#0B1120]/50 border border-slate-700 rounded-xl px-4 py-3 text-slate-300">
-                {user.name}
-              </div>
+            {/* Profile Image */}
+            <div className="flex flex-col items-center mb-6">
+              {profileData.profile_image_url ? (
+                <img 
+                  src={profileData.profile_image_url} 
+                  alt="Foto de perfil"
+                  className="w-32 h-32 rounded-full object-cover border-4 border-[#DAA520]/30 mb-4"
+                />
+              ) : (
+                <div className="w-32 h-32 rounded-full bg-[#DAA520]/20 flex items-center justify-center border-4 border-[#DAA520]/30 mb-4">
+                  <User className="w-16 h-16 text-[#DAA520]/50" />
+                </div>
+              )}
+              <ImageUpload
+                label="Foto de Perfil"
+                value={profileData.profile_image_url}
+                onChange={(url) => setProfileData({ ...profileData, profile_image_url: url })}
+              />
             </div>
 
             <div>
-              <Label className="text-slate-300 mb-2 block">Email Atual</Label>
-              <div className="bg-[#0B1120]/50 border border-slate-700 rounded-xl px-4 py-3 text-slate-300">
-                {user.email}
-              </div>
+              <Label className="text-slate-300 mb-2 block">Nome</Label>
+              <Input
+                value={profileData.name}
+                onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+                className="bg-[#0B1120]/50 border-slate-700 text-slate-200 rounded-xl h-12 px-4"
+              />
             </div>
 
             <div>
@@ -137,6 +190,109 @@ const Perfil = ({ user }) => {
                 {user.role === 'admin' ? 'Administradora' : 'Mentorada'}
               </div>
             </div>
+
+            <Button
+              onClick={updateProfile}
+              disabled={updatingProfile}
+              className="w-full bg-[#DAA520] text-[#0B1120] hover:bg-[#B8860B] font-medium px-8 py-3 rounded-full transition-all duration-300"
+            >
+              {updatingProfile ? 'Salvando...' : 'Salvar Alterações'}
+            </Button>
+          </div>
+        </div>
+
+        {/* País, Telefone e Endereço */}
+        <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8">
+          <div className="flex items-center space-x-2 mb-6">
+            <Globe className="w-6 h-6 text-[#DAA520]" />
+            <h2 className="text-2xl font-heading font-medium text-slate-200">Localização & Contato</h2>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <Label className="text-slate-300 mb-2 block">País</Label>
+              <Select 
+                value={profileData.country_code} 
+                onValueChange={(v) => {
+                  const country = COUNTRIES.find(c => c.code === v);
+                  setProfileData({ 
+                    ...profileData, 
+                    country_code: v,
+                    country: country?.name || '',
+                    currency: country?.currency || 'BRL'
+                  });
+                }}
+              >
+                <SelectTrigger className="bg-[#0B1120]/50 border-slate-700 text-slate-200 rounded-xl h-12">
+                  <SelectValue>
+                    {selectedCountry ? `${selectedCountry.flag} ${selectedCountry.name}` : 'Selecione...'}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="bg-[#111827] border-white/10">
+                  {COUNTRIES.map((c) => (
+                    <SelectItem key={c.code} value={c.code}>
+                      <span className="flex items-center gap-2">
+                        <span className="text-xl">{c.flag}</span>
+                        <span>{c.name}</span>
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label className="text-slate-300 mb-2 block">Telefone</Label>
+              <div className="flex gap-2">
+                <div className="bg-[#0B1120]/50 border border-slate-700 rounded-xl px-4 py-3 text-slate-300 flex items-center gap-2 min-w-[100px]">
+                  <span className="text-xl">{selectedCountry?.flag}</span>
+                  <span>{selectedCountry?.phone}</span>
+                </div>
+                <Input
+                  value={profileData.phone}
+                  onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
+                  placeholder="(00) 00000-0000"
+                  className="bg-[#0B1120]/50 border-slate-700 text-slate-200 rounded-xl h-12 px-4 flex-1"
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label className="text-slate-300 mb-2 block">Endereço</Label>
+              <Textarea
+                value={profileData.address}
+                onChange={(e) => setProfileData({ ...profileData, address: e.target.value })}
+                placeholder="Rua, número, bairro, cidade..."
+                className="bg-[#0B1120]/50 border-slate-700 text-slate-200 rounded-xl px-4 min-h-[80px]"
+              />
+            </div>
+
+            <div>
+              <Label className="text-slate-300 mb-2 block">Moeda Preferida</Label>
+              <Select 
+                value={profileData.currency} 
+                onValueChange={(v) => setProfileData({ ...profileData, currency: v })}
+              >
+                <SelectTrigger className="bg-[#0B1120]/50 border-slate-700 text-slate-200 rounded-xl h-12">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-[#111827] border-white/10">
+                  {CURRENCIES.map((c) => (
+                    <SelectItem key={c.code} value={c.code}>
+                      {c.symbol} - {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Button
+              onClick={updateProfile}
+              disabled={updatingProfile}
+              className="w-full bg-[#DAA520] text-[#0B1120] hover:bg-[#B8860B] font-medium px-8 py-3 rounded-full transition-all duration-300"
+            >
+              {updatingProfile ? 'Salvando...' : 'Salvar Alterações'}
+            </Button>
           </div>
         </div>
 
