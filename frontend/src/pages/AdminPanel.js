@@ -275,7 +275,7 @@ const AdminPanel = ({ user }) => {
   };
 
   // Create Produto
-  const [newProduto, setNewProduto] = useState({ name: '', description: '', content_url: '' });
+  const [newProduto, setNewProduto] = useState({ name: '', description: '', content_url: '', cover_image_url: '', price: '' });
   const [creatingProduto, setCreatingProduto] = useState(false);
 
   const createProduto = async () => {
