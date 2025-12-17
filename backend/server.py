@@ -225,6 +225,44 @@ class UpdatePasswordRequest(BaseModel):
     current_password: str
     new_password: str
 
+# ============ UPLOAD ROUTES ============
+
+ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.webp'}
+MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
+
+@api_router.post("/upload")
+async def upload_image(file: UploadFile = File(...)):
+    """Upload an image and return its URL"""
+    # Check file extension
+    file_ext = Path(file.filename).suffix.lower()
+    if file_ext not in ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Tipo de arquivo não permitido. Use: {', '.join(ALLOWED_EXTENSIONS)}"
+        )
+    
+    # Check file size
+    contents = await file.read()
+    if len(contents) > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=400,
+            detail="Arquivo muito grande. Máximo: 5MB"
+        )
+    
+    # Generate unique filename
+    unique_filename = f"{uuid.uuid4()}{file_ext}"
+    file_path = UPLOADS_DIR / unique_filename
+    
+    # Save file
+    with open(file_path, "wb") as f:
+        f.write(contents)
+    
+    # Return the URL
+    return {
+        "url": f"/uploads/{unique_filename}",
+        "filename": unique_filename
+    }
+
 # ============ AUTH HELPERS ============
 
 def hash_password(password: str) -> str:
