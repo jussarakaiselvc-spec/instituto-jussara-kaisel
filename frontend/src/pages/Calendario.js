@@ -24,6 +24,88 @@ import { toast } from 'sonner';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Component to show scheduling links for mentorada
+const SchedulingLinks = () => {
+  const [links, setLinks] = useState(null);
+  const [loadingLinks, setLoadingLinks] = useState(true);
+
+  useEffect(() => {
+    const fetchLinks = async () => {
+      try {
+        const response = await axios.get(`${API}/scheduling-links`);
+        setLinks(response.data);
+      } catch (error) {
+        console.error('Error fetching scheduling links:', error);
+      } finally {
+        setLoadingLinks(false);
+      }
+    };
+    fetchLinks();
+  }, []);
+
+  if (loadingLinks) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <Loader2 className="w-6 h-6 animate-spin text-[#DAA520]" />
+      </div>
+    );
+  }
+
+  if (!links?.has_links) {
+    return (
+      <div className="mt-6 space-y-4">
+        <p className="text-slate-400 text-sm">
+          Para agendar sua próxima sessão, entre em contato com a mentora pelo chat de mensagens.
+        </p>
+        <a 
+          href="/mensagens" 
+          className="inline-flex items-center px-6 py-3 bg-[#DAA520] text-[#0B1120] rounded-full font-medium hover:bg-[#B8860B] transition-colors"
+        >
+          <MessageCircle className="w-5 h-5 mr-2" />
+          Enviar Mensagem
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-6 space-y-6">
+      <p className="text-slate-300 text-base">
+        Escolha uma das opções abaixo para agendar sua próxima sessão:
+      </p>
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        {links.calendly_url && (
+          <a
+            href={links.calendly_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-xl font-medium hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-blue-500/25"
+          >
+            <CalendarIcon className="w-5 h-5 mr-2" />
+            Agendar via Calendly
+            <ExternalLink className="w-4 h-4 ml-2 opacity-70" />
+          </a>
+        )}
+        {links.youcanbookme_url && (
+          <a
+            href={links.youcanbookme_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center px-6 py-4 bg-gradient-to-r from-[#DAA520] to-[#B8860B] text-[#0B1120] rounded-xl font-medium hover:from-[#B8860B] hover:to-[#8B6914] transition-all shadow-lg hover:shadow-[#DAA520]/25"
+          >
+            <CalendarIcon className="w-5 h-5 mr-2" />
+            Agendar via YouCanBookMe
+            <ExternalLink className="w-4 h-4 ml-2 opacity-70" />
+          </a>
+        )}
+      </div>
+      <p className="text-slate-500 text-xs">
+        Ao clicar, você será redirecionada para a agenda da mentora
+      </p>
+    </div>
+  );
+};
+
 const Calendario = ({ user }) => {
   const [agendamentos, setAgendamentos] = useState([]);
   const [loading, setLoading] = useState(true);
