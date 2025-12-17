@@ -32,6 +32,7 @@ const AdminPanel = ({ user }) => {
   const [users, setUsers] = useState([]);
   const [mentorias, setMentorias] = useState([]);
   const [produtos, setProdutos] = useState([]);
+  const [mentoradaMentorias, setMentoradaMentorias] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,20 +41,29 @@ const AdminPanel = ({ user }) => {
 
   const fetchAllData = async () => {
     try {
-      const [usersRes, mentoriasRes, produtosRes] = await Promise.all([
+      const [usersRes, mentoriasRes, produtosRes, mmRes] = await Promise.all([
         axios.get(`${API}/users`),
         axios.get(`${API}/mentorias`),
         axios.get(`${API}/produtos`),
+        axios.get(`${API}/mentorada-mentorias/all`),
       ]);
       setUsers(usersRes.data);
       setMentorias(mentoriasRes.data);
       setProdutos(produtosRes.data);
+      setMentoradaMentorias(mmRes.data);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast.error('Erro ao carregar dados');
     } finally {
       setLoading(false);
     }
+  };
+
+  // Helper to get mentorada name from mentorada_mentoria
+  const getMentoradaMentoriaLabel = (mm) => {
+    const user = users.find(u => u.user_id === mm.user_id);
+    const mentoria = mentorias.find(m => m.mentoria_id === mm.mentoria_id);
+    return `${user?.name || 'N/A'} - ${mentoria?.name || 'N/A'}`;
   };
 
   // Create Mentorada
