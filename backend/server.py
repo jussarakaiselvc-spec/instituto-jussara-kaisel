@@ -166,6 +166,8 @@ class ProdutoBase(BaseModel):
     name: str
     description: Optional[str] = None
     content_url: Optional[str] = None
+    cover_image_url: Optional[str] = None
+    price: Optional[str] = None
 
 class ProdutoCreate(ProdutoBase):
     pass
