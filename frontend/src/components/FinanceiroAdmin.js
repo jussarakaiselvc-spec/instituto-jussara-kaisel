@@ -64,6 +64,20 @@ const FinanceiroAdmin = () => {
     data_pagamento: '',
     observacoes: '',
   });
+  
+  // Parcela editing states
+  const [editingParcela, setEditingParcela] = useState(null);
+  const [parcelaEditData, setParcelaEditData] = useState({
+    valor: '',
+    data_vencimento: '',
+    status: 'pendente',
+    data_pagamento: '',
+  });
+  const [addingParcela, setAddingParcela] = useState(null); // financeiro_id to add parcela to
+  const [newParcela, setNewParcela] = useState({
+    valor: '',
+    data_vencimento: '',
+  });
 
   useEffect(() => {
     fetchFinanceiros();
