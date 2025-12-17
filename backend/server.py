@@ -154,6 +154,8 @@ class FinanceiroBase(BaseModel):
     valor_total: float
     forma_pagamento: str
     numero_parcelas: int
+    currency: Optional[str] = "BRL"  # BRL, USD, EUR, JPY
+    data_pagamento: Optional[datetime] = None  # Data do primeiro pagamento
     observacoes: Optional[str] = None
 
 class FinanceiroCreate(FinanceiroBase):
