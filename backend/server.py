@@ -1137,6 +1137,61 @@ async def sync_event_to_google_calendar(agendamento_id: str, admin: dict = Depen
         "agendamento": agendamento
     }
 
+# ============ SCHEDULING SETTINGS ============
+
+class SchedulingSettingsUpdate(BaseModel):
+    calendly_url: Optional[str] = None
+    youcanbookme_url: Optional[str] = None
+    google_calendar_id: Optional[str] = None
+
+@api_router.get("/admin/scheduling-settings")
+async def get_scheduling_settings(admin: dict = Depends(get_admin_user)):
+    """Get admin scheduling settings"""
+    settings = await db.settings.find_one({'type': 'scheduling'}, {'_id': 0})
+    if not settings:
+        return {
+            'calendly_url': '',
+            'youcanbookme_url': '',
+            'google_calendar_id': ''
+        }
+    return settings
+
+@api_router.put("/admin/scheduling-settings")
+async def update_scheduling_settings(settings: SchedulingSettingsUpdate, admin: dict = Depends(get_admin_user)):
+    """Update admin scheduling settings"""
+    update_data = {k: v for k, v in settings.model_dump().items() if v is not None}
+    update_data['type'] = 'scheduling'
+    update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+    
+    await db.settings.update_one(
+        {'type': 'scheduling'},
+        {'$set': update_data},
+        upsert=True
+    )
+    
+    updated = await db.settings.find_one({'type': 'scheduling'}, {'_id': 0})
+    return updated
+
+@api_router.get("/scheduling-links")
+async def get_scheduling_links(current_user: dict = Depends(get_current_user)):
+    """Get scheduling links for mentorada (public endpoint for logged users)"""
+    settings = await db.settings.find_one({'type': 'scheduling'}, {'_id': 0})
+    if not settings:
+        return {
+            'calendly_url': '',
+            'youcanbookme_url': '',
+            'google_calendar_id': '',
+            'has_links': False
+        }
+    
+    has_links = bool(settings.get('calendly_url') or settings.get('youcanbookme_url'))
+    return {
+        'calendly_url': settings.get('calendly_url', ''),
+        'youcanbookme_url': settings.get('youcanbookme_url', ''),
+        'google_calendar_id': settings.get('google_calendar_id', ''),
+        'has_links': has_links
+    }
+
 # ============ ADMIN FINANCEIRO OVERVIEW ============
 
 @api_router.get("/admin/financeiro-overview")
