@@ -652,6 +652,20 @@ def main():
             tester.test_update_financeiro()
             tester.test_get_financeiro_overview()
             tester.test_payment_methods()
+            
+            # Test dynamic parcela features
+            tester.test_get_parcelas()
+            tester.test_add_new_parcela()
+            tester.test_edit_parcela()
+            tester.test_mark_parcela_status()
+            tester.test_delete_parcela()
+            
+            # Test financial summary calculations
+            tester.test_financial_summary_calculations()
+            
+            # Test mentorada dashboard sessions
+            tester.test_mentorada_sessions_endpoint()
+            
             tester.test_delete_financeiro()
     
     # Test access control
