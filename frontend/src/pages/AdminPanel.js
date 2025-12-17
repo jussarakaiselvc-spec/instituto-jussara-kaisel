@@ -620,6 +620,16 @@ const AdminPanel = ({ user }) => {
                       <div className="flex-1">
                         <p className="text-slate-200 font-medium text-lg">{m.name}</p>
                         {m.description && <p className="text-sm text-slate-400 mt-1 line-clamp-2">{m.description}</p>}
+                        {m.sales_link && (
+                          <a 
+                            href={m.sales_link} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-xs text-[#DAA520] hover:underline mt-2 inline-block"
+                          >
+                            🔗 Ver página de vendas
+                          </a>
+                        )}
                       </div>
                       <div className="flex items-center space-x-1 ml-2">
                         <Button
