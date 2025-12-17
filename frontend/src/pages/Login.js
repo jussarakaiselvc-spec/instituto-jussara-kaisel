@@ -80,7 +80,7 @@ const Login = ({ onLogin }) => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-slate-300">
+              <Label htmlFor="password" className="text-slate-300 text-sm sm:text-base">
                 Senha
               </Label>
               <div className="relative">
@@ -91,15 +91,15 @@ const Login = ({ onLogin }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="bg-[#0B1120]/50 border-slate-700 focus:border-[#DAA520] focus:ring-1 focus:ring-[#DAA520] text-slate-200 placeholder:text-slate-600 rounded-xl h-12 px-4 pr-12"
+                  className="bg-[#0B1120]/50 border-slate-700 focus:border-[#DAA520] focus:ring-1 focus:ring-[#DAA520] text-slate-200 placeholder:text-slate-600 rounded-xl h-11 sm:h-12 px-3 sm:px-4 pr-11 sm:pr-12 text-sm sm:text-base"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#DAA520] transition-colors"
+                  className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#DAA520] transition-colors p-1"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
                 </button>
               </div>
             </div>
@@ -108,7 +108,7 @@ const Login = ({ onLogin }) => {
               type="submit"
               data-testid="login-button"
               disabled={loading}
-              className="w-full bg-[#DAA520] text-[#0B1120] hover:bg-[#B8860B] font-medium px-8 py-3 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(218,165,32,0.3)] hover:shadow-[0_0_25px_rgba(218,165,32,0.5)] h-12"
+              className="w-full bg-[#DAA520] text-[#0B1120] hover:bg-[#B8860B] font-medium px-6 sm:px-8 py-2.5 sm:py-3 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(218,165,32,0.3)] hover:shadow-[0_0_25px_rgba(218,165,32,0.5)] h-11 sm:h-12 text-sm sm:text-base"
             >
               {loading ? 'Entrando...' : 'Entrar'}
             </Button>
