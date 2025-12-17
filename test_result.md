@@ -122,4 +122,4 @@ test_plan:
 
 agent_communication:
   - agent: "main"
-    message: "Implementado sistema de parcelas dinâmicas no financeiro. Novas funcionalidades: PATCH /api/parcelas/{id} para edição parcial, DELETE /api/parcelas/{id} para exclusão, POST /api/parcelas/add para adicionar novas parcelas. Frontend atualizado com UI para adicionar/editar/excluir parcelas individuais. Dashboard da mentorada mostra agenda de sessões. Credenciais: admin=jussarakaiselvc@gmail.com/jussara123, mentorada=karina_kiriki@icloud.com/mentorada123"
+    message: "VERIFICAÇÃO FINAL: 1) Parcelas dinâmicas funcionando; 2) Menu lateral mobile com scroll (Perfil visível); 3) Sessões/Financeiro buscando de todas mentorias; 4) Calendário com links de agendamento (Calendly/YouCanBookMe) salvos no banco; 5) Vitrine de mentorias com cadeado; 6) Perfil com país/moeda/telefone editáveis. Credenciais: admin=jussarakaiselvc@gmail.com/jussara123, mentorada=karina_kiriki@icloud.com/mentorada123"
