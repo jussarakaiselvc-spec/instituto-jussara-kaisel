@@ -227,6 +227,8 @@ const AdminPanel = ({ user }) => {
     resumo: '',
   });
   const [creatingSessao, setCreatingSessao] = useState(false);
+  const [editingSessao, setEditingSessao] = useState(null);
+  const [editSessaoData, setEditSessaoData] = useState({});
 
   const createSessao = async () => {
     setCreatingSessao(true);
