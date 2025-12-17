@@ -210,8 +210,7 @@ const FinanceiroAdmin = () => {
     const dataPagamento = newStatus === 'paga' ? new Date().toISOString() : null;
     
     try {
-      await axios.put(`${API}/parcelas/${parcela.parcela_id}`, {
-        ...parcela,
+      await axios.patch(`${API}/parcelas/${parcela.parcela_id}`, {
         status: newStatus,
         data_pagamento: dataPagamento,
       });
@@ -219,6 +218,74 @@ const FinanceiroAdmin = () => {
       fetchFinanceiros();
     } catch (error) {
       toast.error('Erro ao atualizar parcela');
+    }
+  };
+
+  const openEditParcela = (parcela) => {
+    setEditingParcela(parcela);
+    setParcelaEditData({
+      valor: parcela.valor,
+      data_vencimento: parcela.data_vencimento ? parcela.data_vencimento.split('T')[0] : '',
+      status: parcela.status,
+      data_pagamento: parcela.data_pagamento ? parcela.data_pagamento.split('T')[0] : '',
+    });
+  };
+
+  const saveParcela = async () => {
+    try {
+      const updateData = {
+        valor: parseFloat(parcelaEditData.valor),
+        status: parcelaEditData.status,
+      };
+      
+      if (parcelaEditData.data_vencimento) {
+        updateData.data_vencimento = new Date(parcelaEditData.data_vencimento).toISOString();
+      }
+      if (parcelaEditData.data_pagamento) {
+        updateData.data_pagamento = new Date(parcelaEditData.data_pagamento).toISOString();
+      } else if (parcelaEditData.status === 'pendente') {
+        updateData.data_pagamento = null;
+      }
+      
+      await axios.patch(`${API}/parcelas/${editingParcela.parcela_id}`, updateData);
+      toast.success('Parcela atualizada com sucesso!');
+      setEditingParcela(null);
+      fetchFinanceiros();
+    } catch (error) {
+      toast.error('Erro ao atualizar parcela');
+    }
+  };
+
+  const deleteParcela = async (parcelaId) => {
+    if (!window.confirm('Tem certeza que deseja excluir esta parcela?')) return;
+    
+    try {
+      await axios.delete(`${API}/parcelas/${parcelaId}`);
+      toast.success('Parcela excluída com sucesso!');
+      fetchFinanceiros();
+    } catch (error) {
+      toast.error('Erro ao excluir parcela');
+    }
+  };
+
+  const addNewParcela = async (financeiroId) => {
+    if (!newParcela.valor || !newParcela.data_vencimento) {
+      toast.error('Preencha o valor e a data de vencimento');
+      return;
+    }
+    
+    try {
+      await axios.post(`${API}/parcelas/add`, {
+        financeiro_id: financeiroId,
+        valor: parseFloat(newParcela.valor),
+        data_vencimento: new Date(newParcela.data_vencimento).toISOString(),
+      });
+      toast.success('Parcela adicionada com sucesso!');
+      setAddingParcela(null);
+      setNewParcela({ valor: '', data_vencimento: '' });
+      fetchFinanceiros();
+    } catch (error) {
+      toast.error('Erro ao adicionar parcela');
     }
   };
 
