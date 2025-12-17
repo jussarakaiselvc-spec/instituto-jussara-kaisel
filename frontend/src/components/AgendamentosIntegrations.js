@@ -1,31 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, Link as LinkIcon, Settings } from 'lucide-react';
+import { Calendar, Link as LinkIcon, Settings, Save, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const AgendamentosIntegrations = () => {
-  const [calendlyUrl, setCalendlyUrl] = useState('https://calendly.com/jussarakaisel');
-  const [youCanBookMeUrl, setYouCanBookMeUrl] = useState('https://jussarakaisel.youcanbook.me');
-  const [googleCalendarId, setGoogleCalendarId] = useState('');
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 
-  const saveSettings = () => {
-    localStorage.setItem('calendly_url', calendlyUrl);
-    localStorage.setItem('youcanbookme_url', youCanBookMeUrl);
-    localStorage.setItem('google_calendar_id', googleCalendarId);
-    toast.success('Configurações salvas com sucesso!');
+const AgendamentosIntegrations = () => {
+  const [calendlyUrl, setCalendlyUrl] = useState('');
+  const [youCanBookMeUrl, setYouCanBookMeUrl] = useState('');
+  const [googleCalendarId, setGoogleCalendarId] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const saveSettings = async () => {
+    setSaving(true);
+    try {
+      await axios.put(`${API}/admin/scheduling-settings`, {
+        calendly_url: calendlyUrl,
+        youcanbookme_url: youCanBookMeUrl,
+        google_calendar_id: googleCalendarId
+      });
+      toast.success('Configurações salvas com sucesso! As mentoradas agora podem ver seus links de agendamento.');
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      toast.error('Erro ao salvar configurações');
+    } finally {
+      setSaving(false);
+    }
   };
 
-  React.useEffect(() => {
-    const savedCalendly = localStorage.getItem('calendly_url');
-    const savedYouCanBookMe = localStorage.getItem('youcanbookme_url');
-    const savedGoogleCal = localStorage.getItem('google_calendar_id');
-    
-    if (savedCalendly) setCalendlyUrl(savedCalendly);
-    if (savedYouCanBookMe) setYouCanBookMeUrl(savedYouCanBookMe);
-    if (savedGoogleCal) setGoogleCalendarId(savedGoogleCal);
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await axios.get(`${API}/admin/scheduling-settings`);
+        setCalendlyUrl(response.data.calendly_url || '');
+        setYouCanBookMeUrl(response.data.youcanbookme_url || '');
+        setGoogleCalendarId(response.data.google_calendar_id || '');
+      } catch (error) {
+        console.error('Error fetching settings:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
   }, []);
 
   return (
